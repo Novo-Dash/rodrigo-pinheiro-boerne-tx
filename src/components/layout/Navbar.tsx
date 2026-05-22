@@ -66,7 +66,7 @@ export function Navbar({ onBookClick }: NavbarProps) {
               color: scrolled ? 'var(--color-text)' : '#fff',
             }}
           >
-            RP BJJ Boerne
+            RPBJJ Boerne
           </span>
         </a>
 

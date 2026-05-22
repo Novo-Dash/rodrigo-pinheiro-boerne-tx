@@ -47,7 +47,7 @@ export function OurInstructors({ onBookClick }: OurInstructorsProps) {
             {/* Single image filling the card */}
             <div className="relative flex-1 overflow-hidden bg-neutral-200">
               <img
-                src="/lutadores.webp"
+                src="/11.png"
                 alt="Manuel e Nathiely — Head Coaches"
                 className="absolute inset-0 h-full w-full object-cover"
               />
