@@ -66,7 +66,7 @@ export function HowToStart({ onBookClick }: HowToStartProps) {
       </div>
 
       <div className="flex justify-center">
-        <MagneticButton size="lg" onClick={onBookClick}>
+        <MagneticButton onClick={onBookClick}>
           Schedule Free Trial Class
         </MagneticButton>
       </div>

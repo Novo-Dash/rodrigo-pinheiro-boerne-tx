@@ -1,4 +1,4 @@
-import { Section, SectionHeader, Button, ImagePlaceholder } from '@/components/ui'
+import { Section, SectionHeader, Button } from '@/components/ui'
 
 interface OurInstructorsProps {
   onBookClick: () => void
