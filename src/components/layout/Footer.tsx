@@ -18,7 +18,7 @@ export function Footer({ onBookClick }: FooterProps) {
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   Start your journey{' '}
-                  <span style={{ color: 'var(--color-accent)' }}>· RP BJJ Boerne ·</span>
+                  <span style={{ color: 'var(--color-accent)' }}>· RPBJJ Boerne ·</span>
                 </span>
               ))}
             </div>
