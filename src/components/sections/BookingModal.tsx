@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { Button } from '@/components/ui'
-import { useUTMs } from '@/hooks/useUTMs'
+import { useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import type { ModalTag } from '@/hooks/useModal'
-import type { LeadFormData } from '@/types'
+import type { Program } from '@/booking/schedule'
+import { BookingForm } from '@/booking/BookingForm'
+import { BrandPanel } from '@/booking/BrandPanel'
 
 interface BookingModalProps {
   isOpen: boolean
@@ -10,36 +11,17 @@ interface BookingModalProps {
   onClose: () => void
 }
 
-type Step = 'form' | 'loading' | 'success' | 'error'
-
-const INITIAL_FORM: LeadFormData = {
-  firstName: '',
-  lastName: '',
-  phone: '',
-  email: '',
-  programInterest: 'both',
-  website: '',
+// CTA tags map to a pre-selected program where unambiguous. 'kids' stays
+// unselected — there are two kids programs, the parent picks one.
+const TAG_TO_PROGRAM: Record<Exclude<ModalTag, null>, Program | null> = {
+  adults: 'adults-jj',
+  women: 'women',
+  kids: null,
+  both: null,
 }
 
-let lastSubmitTime = 0
-
 export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps) {
-  const [step, setStep] = useState<Step>('form')
-  const [form, setForm] = useState<LeadFormData>(INITIAL_FORM)
-  const [errors, setErrors] = useState<Partial<Record<keyof LeadFormData, string>>>({})
-  const utms = useUTMs()
   const overlayRef = useRef<HTMLDivElement>(null)
-  const firstInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (isOpen) {
-      setStep('form')
-      const interest = defaultTag === 'kids' ? 'kids' : defaultTag === 'women' ? 'women' : 'both'
-      setForm({ ...INITIAL_FORM, programInterest: interest })
-      setErrors({})
-      setTimeout(() => firstInputRef.current?.focus(), 100)
-    }
-  }, [isOpen, defaultTag])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -56,75 +38,11 @@ export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps)
     [onClose]
   )
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value } = e.target
-      setForm((prev) => ({ ...prev, [name]: value }))
-      setErrors((prev) => ({ ...prev, [name]: undefined }))
-    },
-    []
-  )
-
-  function validate(): boolean {
-    const next: typeof errors = {}
-    if (!form.firstName.trim()) next.firstName = 'Required'
-    if (!form.lastName.trim()) next.lastName = 'Required'
-    if (!form.phone.trim()) next.phone = 'Required'
-    if (!form.email.trim() || !form.email.includes('@')) next.email = 'Valid email required'
-    if (Object.keys(next).length > 0) {
-      setErrors(next)
-      return false
-    }
-    return true
-  }
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault()
-
-      if (form.website) return
-
-      const now = Date.now()
-      if (now - lastSubmitTime < 5000) return
-      lastSubmitTime = now
-
-      if (!validate()) return
-
-      setStep('loading')
-
-      try {
-        const response = await fetch('/api/submit-lead', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            firstName: form.firstName,
-            lastName: form.lastName,
-            phone: form.phone,
-            email: form.email,
-            programInterest: form.programInterest,
-            website: form.website,
-            source: 'rpbjj-boerne-lp',
-            tags: ['boerne-lp', 'free-trial'],
-            ...utms,
-          }),
-        })
-
-        if (!response.ok) throw new Error('Submit failed')
-
-        setStep('success')
-
-        if (typeof window.fbq === 'function') window.fbq('track', 'Lead')
-        if (typeof window.gtag === 'function') window.gtag('event', 'Lead', { event_category: 'booking_modal' })
-      } catch {
-        setStep('error')
-      }
-    },
-    [form, utms]
-  )
-
   if (!isOpen) return null
 
-  return (
+  const initialProgram = defaultTag ? TAG_TO_PROGRAM[defaultTag] : null
+
+  return createPortal(
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 backdrop-blur-sm p-0 md:items-center md:p-4"
@@ -133,12 +51,11 @@ export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps)
       aria-label="Reserve Your Free Class"
       onClick={handleOverlayClick}
     >
-      <div className="relative w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-[var(--radius-lg)] md:rounded-[var(--radius-lg)] bg-white shadow-[var(--shadow-lg)]">
-        {/* Close */}
+      <div className="relative grid max-h-[90dvh] w-full max-w-[960px] grid-cols-1 overflow-hidden rounded-t-[var(--radius-lg)] bg-white shadow-[var(--shadow-lg)] md:grid-cols-[2fr_3fr] md:rounded-[var(--radius-lg)]">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 flex h-[44px] w-[44px] items-center justify-center rounded-full text-[var(--color-text-muted)] hover:bg-[var(--color-bg-subtle)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+          className="absolute right-4 top-4 z-10 flex h-[44px] w-[44px] items-center justify-center rounded-full text-[var(--color-text-muted)] hover:bg-[var(--color-bg-subtle)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
           aria-label="Close modal"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -146,200 +63,14 @@ export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps)
           </svg>
         </button>
 
-        <div className="px-7 pb-8 pt-7">
-          {step === 'form' && (
-            <>
-              <p className="text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)] mb-1">
-                First class on us
-              </p>
-              <h2 className="text-2xl font-bold text-[var(--color-text)] mb-1">
-                Reserve Your Free Class
-              </h2>
-              <p className="text-sm text-[var(--color-text-muted)] mb-7">
-                No experience needed. No commitment.
-              </p>
-
-              <form onSubmit={handleSubmit} noValidate>
-                {/* Honeypot */}
-                <input
-                  type="text"
-                  name="website"
-                  value={form.website}
-                  onChange={handleChange}
-                  tabIndex={-1}
-                  aria-hidden="true"
-                  style={{ display: 'none' }}
-                  autoComplete="off"
-                />
-
-                <div className="grid gap-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FieldGroup label="First Name" error={errors.firstName}>
-                      <input
-                        ref={firstInputRef}
-                        type="text"
-                        name="firstName"
-                        value={form.firstName}
-                        onChange={handleChange}
-                        autoComplete="given-name"
-                        required
-                        className={inputClass(!!errors.firstName)}
-                        placeholder="Sarah"
-                      />
-                    </FieldGroup>
-                    <FieldGroup label="Last Name" error={errors.lastName}>
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={form.lastName}
-                        onChange={handleChange}
-                        autoComplete="family-name"
-                        required
-                        className={inputClass(!!errors.lastName)}
-                        placeholder="Johnson"
-                      />
-                    </FieldGroup>
-                  </div>
-
-                  <FieldGroup label="Phone" error={errors.phone}>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={form.phone}
-                      onChange={handleChange}
-                      autoComplete="tel"
-                      required
-                      className={inputClass(!!errors.phone)}
-                      placeholder="(210) 000-0000"
-                    />
-                  </FieldGroup>
-
-                  <FieldGroup label="Email" error={errors.email}>
-                    <input
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      autoComplete="email"
-                      required
-                      className={inputClass(!!errors.email)}
-                      placeholder="sarah@email.com"
-                    />
-                  </FieldGroup>
-
-                  <FieldGroup label="Program Interest">
-                    <select
-                      name="programInterest"
-                      value={form.programInterest}
-                      onChange={handleChange}
-                      className={inputClass(false)}
-                    >
-                      <option value="kids">Kids BJJ</option>
-                      <option value="adults">Adults BJJ</option>
-                      <option value="women">Women BJJ</option>
-                      <option value="both">Not sure yet</option>
-                    </select>
-                  </FieldGroup>
-
-                  <Button type="submit" className="w-full mt-2" size="lg">
-                    Reserve My Free Class
-                  </Button>
-
-                  <p className="text-center text-xs text-[var(--color-text-muted)]">
-                    By submitting, you agree to be contacted about your class.
-                  </p>
-                </div>
-              </form>
-            </>
-          )}
-
-          {step === 'loading' && (
-            <div className="flex flex-col items-center gap-5 py-12">
-              <LoadingSpinner />
-              <p className="text-base font-medium text-[var(--color-text-muted)]">
-                Reserving your spot...
-              </p>
-            </div>
-          )}
-
-          {step === 'success' && (
-            <div className="flex flex-col items-center gap-5 py-10 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <circle cx="16" cy="16" r="16" fill="#16a34a" opacity="0.15" />
-                  <path d="M10 16l4 4 8-8" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-[var(--color-text)]">
-                You&apos;re in!
-              </h2>
-              <p className="text-base text-[var(--color-text-muted)]">
-                We&apos;ll be in touch shortly to confirm your free class.
-              </p>
-              <Button onClick={onClose} variant="secondary" size="md">
-                Close
-              </Button>
-            </div>
-          )}
-
-          {step === 'error' && (
-            <div className="flex flex-col items-center gap-5 py-10 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <circle cx="16" cy="16" r="16" fill="#dc2626" opacity="0.15" />
-                  <path d="M11 11l10 10M21 11L11 21" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-[var(--color-text)]">
-                Something went wrong
-              </h2>
-              <p className="text-base text-[var(--color-text-muted)]">
-                Please call us directly and we&apos;ll get you set up.
-              </p>
-              <a
-                href="tel:+12108676156"
-                className="inline-flex h-[52px] items-center gap-2 rounded-none bg-[var(--color-accent)] px-7 text-base font-semibold text-white hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(255,106,0,0.35)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
-              >
-                Call (210) 867-6156
-              </a>
-              <button
-                type="button"
-                onClick={() => setStep('form')}
-                className="text-sm text-[var(--color-text-muted)] underline hover:text-[var(--color-accent)] h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] rounded-sm"
-              >
-                Try again
-              </button>
-            </div>
-          )}
+        {/* Left: brand panel (fixed). Right: the shared form — the only part
+            that scrolls if the viewport is short; the modal itself never does. */}
+        <BrandPanel />
+        <div className="overflow-y-auto px-6 py-7 md:px-8 md:py-8">
+          <BookingForm initialProgram={initialProgram} onDone={onClose} />
         </div>
       </div>
-    </div>
-  )
-}
-
-function FieldGroup({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-sm font-medium text-[var(--color-text)]">{label}</label>
-      {children}
-      {error && (
-        <p className="text-xs text-[var(--color-danger)]" role="alert">{error}</p>
-      )}
-    </div>
-  )
-}
-
-function inputClass(hasError: boolean) {
-  return `h-[48px] w-full rounded-[var(--radius-sm)] border ${
-    hasError ? 'border-[var(--color-danger)]' : 'border-[var(--color-border)]'
-  } bg-[var(--color-bg)] px-4 text-base text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] transition-shadow`
-}
-
-function LoadingSpinner() {
-  return (
-    <svg className="animate-spin" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-      <circle cx="20" cy="20" r="16" stroke="var(--color-border)" strokeWidth="4" />
-      <path d="M20 4a16 16 0 0 1 16 16" stroke="var(--color-accent)" strokeWidth="4" strokeLinecap="round" />
-    </svg>
+    </div>,
+    document.body
   )
 }

@@ -33,23 +33,3 @@ export interface ScheduleSlot {
   label: string
 }
 
-export interface ModalStep {
-  step: 'form' | 'loading' | 'success' | 'error'
-}
-
-export interface LeadFormData {
-  firstName: string
-  lastName: string
-  phone: string
-  email: string
-  programInterest: 'kids' | 'adults' | 'women' | 'both'
-  website: string
-}
-
-export interface UTMParams {
-  utm_source: string
-  utm_medium: string
-  utm_campaign: string
-  utm_term: string
-  utm_content: string
-}

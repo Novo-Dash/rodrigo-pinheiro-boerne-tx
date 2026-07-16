@@ -1,4 +1,6 @@
 import { useCallback } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BookPage } from '@/booking/BookPage'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import {
@@ -16,6 +18,7 @@ import {
 import { BookingModal } from '@/components/sections/BookingModal'
 import { useModal } from '@/hooks/useModal'
 import { useScrollDepth } from '@/hooks/useScrollDepth'
+import { fbqTrack, ga4Event } from '@/booking/analytics'
 import type { ModalTag } from '@/hooks/useModal'
 
 function LandingPage() {
@@ -25,9 +28,8 @@ function LandingPage() {
   const handleBookClick = useCallback(
     (tag?: ModalTag) => {
       open(tag ?? null)
-      if (typeof window.fbq === 'function') {
-        window.fbq('track', 'InitiateCheckout')
-      }
+      fbqTrack('ViewContent', { content_name: 'Trial Booking' })
+      ga4Event('view_content', { content_name: 'Trial Booking' })
     },
     [open]
   )
@@ -64,5 +66,12 @@ function LandingPage() {
 }
 
 export default function App() {
-  return <LandingPage />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/book" element={<BookPage />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
