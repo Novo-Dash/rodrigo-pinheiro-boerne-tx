@@ -1,68 +1,50 @@
-// Booking schedule config for RPBJJ Boerne.
-// PROGRAM_LABEL must match the GHL calendar names exactly (it is sent as
-// `program` in the lead webhook). Calendar matching in n8n is done by id
-// (PROGRAM_CALENDAR_ID), which is immune to renames.
-
-export type Program =
-  | 'adults-jj'
-  | 'adults-wrestling'
-  | 'women'
-  | 'kids-4-8'
-  | 'kids-9-13'
+// Booking schedule — types + pure date/time helpers.
+//
+// The program list does NOT live here (spec §5): programs AND their slots come
+// live from GHL in one call (get_programs via n8n, §5.1 — see
+// webhook.fetchPrograms). A `Program` is the object n8n delivers. This module
+// keeps only what GHL can't know: per-academy exceptions and fixed constants.
 
 export type Audience = 'adults' | 'kids'
 
-export const PROGRAMS: Program[] = [
-  'adults-jj',
-  'adults-wrestling',
-  'women',
-  'kids-4-8',
-  'kids-9-13',
-]
-
-export const PROGRAM_LABEL: Record<Program, string> = {
-  'adults-jj': 'Adults Jiu-Jitsu',
-  'adults-wrestling': 'Adults Wrestling',
-  women: "Women's Class of Jiu-Jitsu",
-  'kids-4-8': 'Kids (4-8 years) Jiu-Jitsu',
-  'kids-9-13': 'Kids (9-13 Years) Jiu-Jitsu',
+/** A program exactly as the shared n8n workflow returns it (§5.1). Nothing
+ *  here is ever written by hand. */
+export interface Program {
+  /** Matches the calendar on Webhook 2 (immune to renames). */
+  calendar_id: string
+  /** GHL calendar name = `program` on Webhook 1. */
+  name: string
+  /** From the calendar's group in GHL — never recomputed from the name. */
+  audience: Audience
+  duration_minutes: number | null
+  capacity: number
+  /** "YYYY-MM-DD" -> ["HH:MM", ...] local wall-clock times. */
+  slots: SlotsMap
+  slots_error: string | null
 }
 
-export const PROGRAM_AUDIENCE: Record<Program, Audience> = {
-  'adults-jj': 'adults',
-  'adults-wrestling': 'adults',
-  women: 'adults',
-  'kids-4-8': 'kids',
-  'kids-9-13': 'kids',
+/**
+ * Exceptions, and ONLY exceptions. Key = calendar_id.
+ *   label -> display alias when the GHL name doesn't fit the public
+ *   hide  -> not shown on the page (e.g. 1:1, private assessment)
+ * A calendar without an entry here shows normally, under its own GHL name.
+ * Starts EMPTY on a new academy; only filled when someone asks.
+ */
+export const PROGRAM_OVERRIDES: Record<string, { label?: string; hide?: true }> = {}
+
+/** Display alias is visual only — webhooks always carry the raw GHL name. */
+export function displayName(program: Program): string {
+  return PROGRAM_OVERRIDES[program.calendar_id]?.label ?? program.name
 }
 
-export const PROGRAM_CALENDAR_ID: Record<Program, string> = {
-  'adults-jj': 'y1P80txvhjcNVKu9AwuU',
-  'adults-wrestling': '1AJgHFRRa3pYPUxl5Rsm',
-  women: 'bDsWioTBKPgk9AnR1Xh6',
-  'kids-4-8': 'ximUFAjn8dqixF5nOHZv',
-  'kids-9-13': 'ExbMYzPlGtEjf3Eh6jGU',
-}
-
-// Fixed defaults, identical across academies. Live buffer/lead-time is
-// enforced by GHL free-slots; BUFFER_HOURS only applies to the static fallback.
+// Fixed default, identical across academies. Buffer/lead-time is enforced by
+// GHL itself on the free-slots side.
 export const BOOKING_RANGE_DAYS = 14
-export const BUFFER_HOURS = 5
 
 export const ACADEMY_ADDRESS = {
   street: '28255 Frontage Rd Suite 103',
   city: 'Boerne, TX 78006',
   mapsUrl: 'https://maps.app.goo.gl/Z4EffdTNcPicS2sK8',
-}
-
-// Minimal static schedule, used ONLY as a fallback when the live slot fetch
-// fails. Keys are JS weekday indexes (0 = Sunday).
-const FALLBACK_SCHEDULE: Record<Program, Record<number, string[]>> = {
-  'adults-jj': { 1: ['18:00'], 3: ['18:00'], 5: ['18:00'] },
-  'adults-wrestling': { 2: ['18:00'], 4: ['18:00'] },
-  women: { 2: ['18:00'], 4: ['18:00'] },
-  'kids-4-8': { 1: ['17:00'], 3: ['17:00'] },
-  'kids-9-13': { 1: ['17:00'], 3: ['17:00'] },
 }
 
 export type SlotsMap = Record<string, string[]>
@@ -83,37 +65,25 @@ export function isoDate(date: Date): string {
   return `${y}-${m}-${d}`
 }
 
-export function getFallbackTimesForDay(program: Program, date: Date): string[] {
-  const times = FALLBACK_SCHEDULE[program][date.getDay()] ?? []
-  const now = new Date()
-  return times.filter((t) => {
-    const [h, m] = t.split(':').map(Number)
-    const slot = new Date(date)
-    slot.setHours(h, m, 0, 0)
-    return slot.getTime() - now.getTime() >= BUFFER_HOURS * 60 * 60 * 1000
-  })
+// Times for a day, reading the program's live GHL slot map (§5.1).
+export function getTimesForDay(program: Program, date: Date): string[] {
+  return program.slots[isoDate(date)] ?? []
 }
 
-// Times for a day, reading the live GHL map (fallback schedule on error).
-export function getTimesForDay(slots: SlotsMap | null, program: Program, date: Date): string[] {
-  if (slots) return slots[isoDate(date)] ?? []
-  return getFallbackTimesForDay(program, date)
-}
-
-export function isDateBookable(slots: SlotsMap | null, program: Program, date: Date): boolean {
+export function isDateBookable(program: Program, date: Date): boolean {
   const { min, max } = getBookingWindow()
   const day = new Date(date)
   day.setHours(0, 0, 0, 0)
   if (day < min || day > max) return false
-  return getTimesForDay(slots, program, date).length > 0
+  return getTimesForDay(program, date).length > 0
 }
 
-export function getFirstBookableDate(slots: SlotsMap | null, program: Program): Date | null {
+export function getFirstBookableDate(program: Program): Date | null {
   const { min } = getBookingWindow()
   for (let i = 0; i <= BOOKING_RANGE_DAYS; i++) {
     const d = new Date(min)
     d.setDate(d.getDate() + i)
-    if (isDateBookable(slots, program, d)) return d
+    if (isDateBookable(program, d)) return d
   }
   return null
 }

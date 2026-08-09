@@ -11,13 +11,16 @@ interface BookingModalProps {
   onClose: () => void
 }
 
-// CTA tags map to a pre-selected program where unambiguous. 'kids' stays
-// unselected — there are two kids programs, the parent picks one.
-const TAG_TO_PROGRAM: Record<Exclude<ModalTag, null>, Program | null> = {
-  adults: 'adults-jj',
-  women: 'women',
-  kids: null,
-  both: null,
+// CTA tags pre-select a program from the LIVE list where unambiguous. This is
+// UI convenience only (no match -> nothing pre-selected, the user picks); the
+// audience used for logic always comes from GHL, never from the name. 'kids'
+// stays unselected — there can be several kids programs, the parent picks one.
+const TAG_TO_PICKER: Record<Exclude<ModalTag, null>, (programs: Program[]) => Program | null> = {
+  adults: (programs) =>
+    programs.find((p) => p.audience === 'adults' && !/women/i.test(p.name)) ?? null,
+  women: (programs) => programs.find((p) => /women/i.test(p.name)) ?? null,
+  kids: () => null,
+  both: () => null,
 }
 
 export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps) {
@@ -40,7 +43,7 @@ export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps)
 
   if (!isOpen) return null
 
-  const initialProgram = defaultTag ? TAG_TO_PROGRAM[defaultTag] : null
+  const pickInitialProgram = defaultTag ? TAG_TO_PICKER[defaultTag] : undefined
 
   return createPortal(
     <div
@@ -67,7 +70,7 @@ export function BookingModal({ isOpen, defaultTag, onClose }: BookingModalProps)
             that scrolls if the viewport is short; the modal itself never does. */}
         <BrandPanel />
         <div className="overflow-y-auto px-6 py-7 md:px-8 md:py-8">
-          <BookingForm initialProgram={initialProgram} onDone={onClose} />
+          <BookingForm pickInitialProgram={pickInitialProgram} onDone={onClose} />
         </div>
       </div>
     </div>,

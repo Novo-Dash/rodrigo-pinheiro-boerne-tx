@@ -1,6 +1,5 @@
-import type { Program } from './schedule'
-import { PROGRAM_LABEL, PROGRAM_AUDIENCE, PROGRAM_CALENDAR_ID, isoDate, formatTimeLabel } from './schedule'
-import type { SlotsMap } from './schedule'
+import type { Program, SlotsMap } from './schedule'
+import { PROGRAM_OVERRIDES, isoDate, formatTimeLabel } from './schedule'
 import { getAttribution } from './attribution'
 
 // FIXED for all academies — the shared n8n workflow. Do not parameterize.
@@ -60,7 +59,7 @@ export function toE164(phone: string): string {
 // child_name goes out ONLY for kids programs with the field filled; the key
 // is omitted otherwise (never send the adult's name as child_name).
 function childNameOrNull(data: BookingData): string | null {
-  if (!data.program || PROGRAM_AUDIENCE[data.program] !== 'kids') return null
+  if (data.program?.audience !== 'kids') return null
   const name = data.childName.trim()
   return name.length > 0 ? name : null
 }
@@ -78,8 +77,8 @@ export function sendLeadWebhook(data: BookingData): void {
     email: data.email.trim(),
     phone: data.phone.trim(),
     phoneE164: toE164(data.phone),
-    program: PROGRAM_LABEL[data.program],
-    audience: PROGRAM_AUDIENCE[data.program],
+    program: data.program.name, // raw GHL calendar name -> CRM Program field (never the alias)
+    audience: data.program.audience, // adults | kids — routes the shared workflow
     submittedAt: new Date().toISOString(),
     source: SOURCE_LABEL,
     ...getAttribution(),
@@ -97,7 +96,7 @@ export function sendBookingWebhook(data: BookingData): void {
     ...(cn ? { child_name: cn } : {}),
     email: data.email.trim(),
     phone: data.phone.trim(),
-    calendar_id: PROGRAM_CALENDAR_ID[data.program],
+    calendar_id: data.program.calendar_id, // matches calendar in n8n (rename-proof)
     location_id: GHL_LOCATION_ID,
     stage: 'appointment_selected',
     appointment_date: isoDate(data.date),
@@ -106,31 +105,70 @@ export function sendBookingWebhook(data: BookingData): void {
   })
 }
 
-// Live availability from GHL free-slots, via the same shared n8n workflow.
-// Response: { "YYYY-MM-DD": { slots: ["<ISO with academy offset>", ...] } }.
-// The ISO already carries the academy timezone, so local date/time come out
-// of plain string slicing — no timezone conversion.
-export async function fetchSlots(program: Program): Promise<SlotsMap> {
-  const res = await fetch(BOOKING_WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'get_slots',
-      location_id: GHL_LOCATION_ID,
-      calendar_id: PROGRAM_CALENDAR_ID[program],
-    }),
-  })
-  if (!res.ok) throw new Error(`get_slots responded ${res.status}`)
-  const raw = (await res.json()) as Record<string, { slots?: unknown }>
+/* ------------------------------------------------------------------ *
+ * Live programs + slots, ONE call (same n8n workflow, action-discriminated)
+ * ------------------------------------------------------------------ */
+
+// ISO list per date -> "HH:MM" wall-clock list. Each ISO already carries the
+// academy's timezone, so date/time come straight from the string (§5.1 — no
+// timezone conversion).
+function toSlotMap(raw: unknown): SlotsMap {
   const map: SlotsMap = {}
-  for (const value of Object.values(raw)) {
-    // Non-date keys (e.g. traceId) are skipped: only entries whose slots is an array.
-    if (!value || !Array.isArray(value.slots)) continue
-    for (const iso of value.slots) {
-      if (typeof iso !== 'string') continue
-      const day = iso.slice(0, 10)
-      ;(map[day] ??= []).push(iso.slice(11, 16))
-    }
+  if (!raw || typeof raw !== 'object') return map
+  for (const [date, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Array.isArray(value)) continue
+    const times = value
+      .filter((s): s is string => typeof s === 'string')
+      .map((iso) => iso.slice(11, 16))
+      .filter((t) => /^\d{2}:\d{2}$/.test(t))
+    if (times.length) map[date] = times.sort()
   }
   return map
+}
+
+/**
+ * POST { action:"get_programs" } — the ONE live fetch (§5.1): programs and the
+ * slots of every program together, once per session (module-level cache; the
+ * shared workflow answers ordered adults-first). Unlike the webhooks this is
+ * NOT fire-and-forget — without it there is nothing to render, so failures
+ * surface as an error state in the UI.
+ */
+let programsPromise: Promise<Program[]> | null = null
+
+export function fetchPrograms(): Promise<Program[]> {
+  if (!programsPromise) {
+    programsPromise = (async () => {
+      const res = await fetch(BOOKING_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'get_programs',
+          location_id: GHL_LOCATION_ID,
+        }),
+      })
+      if (!res.ok) throw new Error(`get_programs responded ${res.status}`)
+      const raw = (await res.json()) as { programs?: unknown[] }
+      return (raw?.programs ?? [])
+        .filter(
+          (p): p is Record<string, unknown> =>
+            !!p && typeof p === 'object' && !!(p as Record<string, unknown>).calendar_id && !!(p as Record<string, unknown>).name
+        )
+        .filter((p) => !PROGRAM_OVERRIDES[p.calendar_id as string]?.hide)
+        .map(
+          (p): Program => ({
+            calendar_id: p.calendar_id as string,
+            name: p.name as string,
+            audience: p.audience === 'kids' ? 'kids' : 'adults',
+            duration_minutes: (p.duration_minutes as number | null) ?? null,
+            capacity: (p.capacity as number) ?? 0,
+            slots: toSlotMap(p.slots),
+            slots_error: (p.slots_error as string | null) ?? null,
+          })
+        )
+    })()
+    programsPromise.catch(() => {
+      programsPromise = null // failed fetch doesn't poison the session cache
+    })
+  }
+  return programsPromise
 }

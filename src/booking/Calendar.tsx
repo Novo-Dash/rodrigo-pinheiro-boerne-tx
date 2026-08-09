@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react'
-import type { Program, SlotsMap } from './schedule'
+import type { Program } from './schedule'
 import { isDateBookable, formatMonthYear, isoDate } from './schedule'
 
 interface CalendarProps {
   program: Program
-  slots: SlotsMap | null
   selected: Date | null
   onSelect: (date: Date) => void
 }
 
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
-export function Calendar({ program, slots, selected, onSelect }: CalendarProps) {
+export function Calendar({ program, selected, onSelect }: CalendarProps) {
   const [viewMonth, setViewMonth] = useState<Date>(() => {
     const base = selected ?? new Date()
     return new Date(base.getFullYear(), base.getMonth(), 1)
@@ -70,7 +69,7 @@ export function Calendar({ program, slots, selected, onSelect }: CalendarProps) 
             <DayCell
               key={isoDate(date)}
               date={date}
-              bookable={isDateBookable(slots, program, date)}
+              bookable={isDateBookable(program, date)}
               selected={!!selected && isoDate(selected) === isoDate(date)}
               onSelect={onSelect}
             />

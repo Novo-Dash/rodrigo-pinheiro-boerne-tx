@@ -1,17 +1,24 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { Program } from './schedule'
-import { PROGRAM_AUDIENCE } from './schedule'
 import type { BookingData } from './webhook'
-import { sendLeadWebhook, sendBookingWebhook, toE164 } from './webhook'
-import { fbqTrack, ga4Event, gtagConversion, setUserData, GADS_LEAD, GADS_BOOKING } from './analytics'
+import { fetchPrograms, sendLeadWebhook, sendBookingWebhook, toE164 } from './webhook'
+import { fbqTrack, ga4Event, gtagConversion, identify, setUserData, GADS_LEAD, GADS_BOOKING } from './analytics'
 import { Step1Details } from './Step1Details'
 import { Step2Schedule } from './Step2Schedule'
 import { Success } from './Success'
 
 type Step = 1 | 2 | 'success'
 
+// Live programs (get_programs, §5.1). `loading` BEFORE first paint — no
+// stale/static flash.
+export type ProgramsState =
+  | { status: 'loading' }
+  | { status: 'ready'; programs: Program[] }
+  | { status: 'error' }
+
 interface BookingFormProps {
-  initialProgram?: Program | null
+  /** Picks a program to pre-select once the live list arrives (CTA tags). */
+  pickInitialProgram?: (programs: Program[]) => Program | null
   onDone?: () => void
   doneLabel?: string
 }
@@ -23,13 +30,13 @@ function hasMergeTag(value: string): boolean {
 // Prefill from the query string (GHL links with contact merge fields).
 // Unresolved merge tags are ignored; E.164 phones get the country code
 // stripped before formatting. Read once (lazy state init) — user edits win.
-function initialData(initialProgram: Program | null): BookingData {
+function initialData(): BookingData {
   const data: BookingData = {
     name: '',
     childName: '',
     email: '',
     phone: '',
-    program: initialProgram,
+    program: null,
     date: null,
     time: null,
   }
@@ -54,12 +61,37 @@ function initialData(initialProgram: Program | null): BookingData {
   return data
 }
 
-export function BookingForm({ initialProgram = null, onDone, doneLabel }: BookingFormProps) {
+export function BookingForm({ pickInitialProgram, onDone, doneLabel }: BookingFormProps) {
   const [step, setStep] = useState<Step>(1)
-  const [data, setData] = useState<BookingData>(() => initialData(initialProgram))
+  const [data, setData] = useState<BookingData>(initialData)
+  const [programs, setPrograms] = useState<ProgramsState>({ status: 'loading' })
   // Lead webhook + Lead events fire once per booking session, even if the
   // user goes back to step 1 and continues again. Reset on completion.
   const leadSent = useRef(false)
+
+  // The single live fetch starts when the form mounts (modal open / /book
+  // load); fetchPrograms caches per session, so re-opening doesn't refetch.
+  useEffect(() => {
+    let cancelled = false
+    fetchPrograms()
+      .then((list) => {
+        if (cancelled) return
+        setPrograms({ status: 'ready', programs: list })
+        // Apply the CTA pre-selection once, and only if the user hasn't
+        // picked a program yet.
+        const preferred = pickInitialProgram?.(list) ?? null
+        if (preferred) {
+          setData((prev) => (prev.program ? prev : { ...prev, program: preferred }))
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setPrograms({ status: 'error' })
+      })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleChange = useCallback((patch: Partial<BookingData>) => {
     setData((prev) => {
@@ -76,10 +108,11 @@ export function BookingForm({ initialProgram = null, onDone, doneLabel }: Bookin
   const handleNext = useCallback(() => {
     if (!leadSent.current) {
       leadSent.current = true
-      const audience = data.program ? PROGRAM_AUDIENCE[data.program] : undefined
+      const audience = data.program?.audience
+      identify({ name: data.name, email: data.email, phone: data.phone }) // Advanced Matching (§7.6.4)
+      setUserData(data.email.trim(), toE164(data.phone)) // Enhanced Conversions
       sendLeadWebhook(data)
       fbqTrack('Lead', { content_category: audience })
-      setUserData(data.email.trim(), toE164(data.phone))
       ga4Event('generate_lead', { audience })
       gtagConversion(GADS_LEAD)
     }
@@ -87,7 +120,7 @@ export function BookingForm({ initialProgram = null, onDone, doneLabel }: Bookin
   }, [data])
 
   const handleConfirm = useCallback(() => {
-    const audience = data.program ? PROGRAM_AUDIENCE[data.program] : undefined
+    const audience = data.program?.audience
     fbqTrack('Schedule', { content_category: audience })
     ga4Event('trial_booked', { audience })
     gtagConversion(GADS_BOOKING)
@@ -96,11 +129,11 @@ export function BookingForm({ initialProgram = null, onDone, doneLabel }: Bookin
   }, [data])
 
   const handleDone = useCallback(() => {
-    setData(initialData(initialProgram))
+    setData(initialData())
     setStep(1)
     leadSent.current = false
     onDone?.()
-  }, [initialProgram, onDone])
+  }, [onDone])
 
   return (
     <div>
@@ -120,7 +153,9 @@ export function BookingForm({ initialProgram = null, onDone, doneLabel }: Bookin
         </div>
       )}
 
-      {step === 1 && <Step1Details data={data} onChange={handleChange} onNext={handleNext} />}
+      {step === 1 && (
+        <Step1Details data={data} programs={programs} onChange={handleChange} onNext={handleNext} />
+      )}
       {step === 2 && (
         <Step2Schedule
           data={data}

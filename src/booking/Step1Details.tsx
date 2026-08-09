@@ -1,10 +1,15 @@
 import { useRef, useEffect } from 'react'
 import { Button } from '@/components/ui'
-import { PROGRAMS, PROGRAM_LABEL, PROGRAM_AUDIENCE } from './schedule'
+import { displayName } from './schedule'
 import type { BookingData } from './webhook'
+import type { ProgramsState } from './BookingForm'
+
+const ACADEMY_PHONE = '+1 (210) 867-6156'
+const ACADEMY_PHONE_HREF = 'tel:+12108676156'
 
 interface Step1DetailsProps {
   data: BookingData
+  programs: ProgramsState
   onChange: (patch: Partial<BookingData>) => void
   onNext: () => void
 }
@@ -23,12 +28,13 @@ export function isStep1Valid(data: BookingData): boolean {
   if (!isValidEmail(data.email)) return false
   if (!isValidPhone(data.phone)) return false
   if (!data.program) return false
-  if (PROGRAM_AUDIENCE[data.program] === 'kids' && data.childName.trim().length < 2) return false
+  if (data.program.audience === 'kids' && data.childName.trim().length < 2) return false
   return true
 }
 
-export function Step1Details({ data, onChange, onNext }: Step1DetailsProps) {
-  const isKids = !!data.program && PROGRAM_AUDIENCE[data.program] === 'kids'
+export function Step1Details({ data, programs, onChange, onNext }: Step1DetailsProps) {
+  // Audience comes from GHL (calendar group) — never recomputed from the name.
+  const isKids = data.program?.audience === 'kids'
   const childRef = useRef<HTMLInputElement>(null)
   const prevKids = useRef(isKids)
 
@@ -91,28 +97,54 @@ export function Step1Details({ data, onChange, onNext }: Step1DetailsProps) {
 
         <fieldset>
           <legend className="mb-2 text-sm font-medium text-[var(--color-text)]">Program</legend>
-          <div className="grid gap-2">
-            {PROGRAMS.map((p) => (
-              <label
-                key={p}
-                className={`flex cursor-pointer items-center gap-3 rounded-[var(--radius-sm)] border px-4 py-3 transition-colors ${
-                  data.program === p
-                    ? 'border-[var(--color-accent)] bg-[var(--color-accent-subtle)]'
-                    : 'border-[var(--color-border)] hover:border-[var(--color-text-muted)]'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="program"
-                  value={p}
-                  checked={data.program === p}
-                  onChange={() => onChange({ program: p })}
-                  className="h-4 w-4 accent-[var(--color-accent)]"
-                />
-                <span className="text-sm font-medium text-[var(--color-text)]">{PROGRAM_LABEL[p]}</span>
-              </label>
-            ))}
-          </div>
+
+          {/* Live list from GHL (get_programs, §5.1): loading before paint,
+              never a static list. */}
+          {programs.status === 'loading' && (
+            <div role="status" className="flex min-h-24 flex-col items-center justify-center gap-2 py-4">
+              <span className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-border)] border-t-[var(--color-accent)]" />
+              <p className="text-sm text-[var(--color-text-muted)]">Loading programs…</p>
+            </div>
+          )}
+
+          {(programs.status === 'error' ||
+            (programs.status === 'ready' && programs.programs.length === 0)) && (
+            <p
+              role="alert"
+              className="rounded-[var(--radius-sm)] bg-[var(--color-accent-subtle)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
+            >
+              We couldn&apos;t load our programs right now. Please call us at{' '}
+              <a href={ACADEMY_PHONE_HREF} className="font-semibold underline">
+                {ACADEMY_PHONE}
+              </a>{' '}
+              and we&apos;ll get you on the mat.
+            </p>
+          )}
+
+          {programs.status === 'ready' && programs.programs.length > 0 && (
+            <div className="grid gap-2">
+              {programs.programs.map((p) => (
+                <label
+                  key={p.calendar_id}
+                  className={`flex cursor-pointer items-center gap-3 rounded-[var(--radius-sm)] border px-4 py-3 transition-colors ${
+                    data.program?.calendar_id === p.calendar_id
+                      ? 'border-[var(--color-accent)] bg-[var(--color-accent-subtle)]'
+                      : 'border-[var(--color-border)] hover:border-[var(--color-text-muted)]'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="program"
+                    value={p.calendar_id}
+                    checked={data.program?.calendar_id === p.calendar_id}
+                    onChange={() => onChange({ program: p })}
+                    className="h-4 w-4 accent-[var(--color-accent)]"
+                  />
+                  <span className="text-sm font-medium text-[var(--color-text)]">{displayName(p)}</span>
+                </label>
+              ))}
+            </div>
+          )}
         </fieldset>
 
         {isKids && (
