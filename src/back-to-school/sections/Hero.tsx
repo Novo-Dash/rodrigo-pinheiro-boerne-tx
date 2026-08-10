@@ -65,13 +65,16 @@ export function Hero({ onBookClick }: Props) {
         className="aspect-[4/3] w-full overflow-hidden sm:aspect-[2/1] lg:aspect-[3/1]"
       >
         <img
-          src="/kids-group.webp"
-          width={1080}
-          height={810}
+          src="/bts-hero.webp"
+          width={2000}
+          height={1116}
           alt="Kids and teens of the RPBJJ Boerne children's program together on the academy mats"
           fetchPriority="high"
           data-parallax="0.06"
-          className="parallax-media h-full w-full object-cover object-[50%_58%]"
+          /* The band is 3:1 and the photo is 1.79:1, so only about 60% of its
+             height fits. 46% is where the tallest heads stay in and the front
+             row of blue gis is not cut at the chest. */
+          className="parallax-media h-full w-full object-cover object-[50%_46%]"
         />
       </figure>
     </section>
