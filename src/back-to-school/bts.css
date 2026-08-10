@@ -1,0 +1,254 @@
+/* ============================================================
+   Back to School — styles scoped to the /back-to-school route.
+
+   Generated from the standalone rpbjj-boerne-back-to-school repo when the campaign was
+   folded into this project. Selectors sit under .bts (page wrapper) and
+   html.bts-page so the client's own theme is never touched.
+   Renamed to avoid collisions: font-display, skip-link
+   
+   ============================================================ */
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
+@import '@fontsource-variable/geist/wght.css';
+
+/* Tokens the client already owns with different values. CSS vars inherit, so
+   re-pointing them here makes every Tailwind utility built on them resolve to
+   the campaign's values inside this route only — the main site is untouched.
+   Set on <html> too: <body> is above .bts in the tree. */
+html.bts-page,
+.bts {
+  --font-display: 'Newsreader Variable', Georgia, 'Times New Roman', serif;
+}
+
+
+/* Self-hosted, never a CDN link: the deploy must render byte-identical fonts.
+   Newsreader carries the optical-size axis, so display sizes get the tighter
+   editorial cut and body sizes stay readable. Italic ships too: emphasis in a
+   headline is the italic of the SAME family, never a second typeface. */
+
+
+/* --------------------------------------------------------------------------
+   Tokens the booking module reads (src/booking/*, ported verbatim from the
+   academy's main site). Mapping them here re-skins the modal and /book page
+   into this palette without touching a line of verified booking code.
+   -------------------------------------------------------------------------- */
+
+
+
+
+
+
+:root {
+  --color-bg: #fbfaf7;
+  --color-surface: #fbfaf7;
+  --color-surface-alt: #f2efe9;
+  --color-bg-subtle: #f2efe9;
+  --color-accent: #ff6a00;
+  --color-accent-hover: #d95800;
+  --color-accent-dark: #b34600;
+  --color-accent-subtle: #fbeadd;
+  --accent-rgb: 255, 106, 0;
+  --color-text: #17140f;
+  --color-text-secondary: #56504a;
+  --color-text-muted: #6f685f;
+  --color-border: #ddd6c9;
+  --color-border-light: #e7e2d8;
+  --color-placeholder: #e7e2d8;
+  --color-placeholder-icon: #6f685f;
+  --color-danger: #c0392b;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-full: 9999px;
+  --radius-pill: 9999px;
+  --radius-card: 0px;
+  --radius-input: 0px;
+  --radius-modal: 0px;
+  --shadow-sm: 0 1px 3px rgba(23, 20, 15, 0.06);
+  --shadow-md: 0 10px 34px rgba(23, 20, 15, 0.1);
+  --shadow-lg: 0 24px 60px rgba(23, 20, 15, 0.16);
+  --shadow-cta: none;
+  --transition-micro: all 0.2s ease-out;
+  --transition-macro: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+  html.bts-page {
+    scroll-behavior: smooth;
+  }
+
+  html.bts-page body {
+    color-scheme: light;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .bts ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .bts :focus-visible {
+    outline: 2px solid var(--color-orange-ink);
+    outline-offset: 3px;
+  }
+
+  /* The booking module renders native inputs; keep them square and warm. */
+
+
+  .bts input,
+
+
+  .bts select,
+
+
+  .bts textarea,
+
+
+  .bts button {
+    font-family: inherit;
+  }
+
+  /* Editorial display type. Newsreader's optical-size axis is driven by the
+     rendered size, so headlines get the tighter display cut automatically. */
+
+  .bts .bts-font-display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  /* Emphasis inside a headline: italic of the same family, with the descender
+     clearance italics need (g, y, j all appear in this page's headlines). */
+
+
+  .bts .em-italic {
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.1;
+    padding-bottom: 0.06em;
+  }
+
+  .bts .bts-skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+  }
+  .bts .bts-skip-link:focus {
+    left: 0;
+  }
+
+  /* Hairline rule used as the page's connective tissue: it separates chapters
+     the way rules do in a printed prospectus. */
+
+
+  .bts .rule {
+    height: 1px;
+    background: var(--color-line);
+  }
+
+  /* Word masks for the headline reveals. The mask is an inline-block with
+     hidden overflow, so the padding below is what keeps the descenders of
+     "beyond" and "saying" from being sliced off; the negative margin gives the
+     same space back so line height is unchanged. */
+
+
+  .bts .rv-w {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+  .bts .rv-i {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  /* Headlines that get split start invisible so the un-split text never
+     flashes before the mask is in place. Under reduced motion, and if JS never
+     runs, the rule below puts them straight back. */
+
+
+  .bts [data-reveal-lines],
+
+
+  .bts [data-reveal-hero-lines] {
+    opacity: 0;
+  }
+
+  /* Parallax media: pre-scaled so drifting it never exposes an edge. */
+
+
+  .bts .parallax-media {
+    scale: 1.16;
+    will-change: transform;
+  }
+
+
+/* --------------------------------------------------------------------------
+   Motion. Elements that animate in start hidden so there is no flash of
+   un-animated content; the reduced-motion block below restores them instantly
+   for anyone who asks for less movement.
+   -------------------------------------------------------------------------- */
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .bts [data-reveal] {
+    opacity: 0;
+  }
+  /* The words' start position is set in JS, not here. GSAP decomposes a CSS
+     `translateY(110%)` into y-in-pixels plus yPercent:0, so animating yPercent
+     to 0 would be a no-op and the text would sit inside its mask forever. The
+     headline's own opacity:0 is what hides it until the timeline takes over. */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.bts-page {
+    scroll-behavior: auto;
+  }
+  .bts [data-reveal],
+
+  .bts [data-reveal-lines],
+
+  .bts [data-reveal-hero-lines] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .bts .rv-i {
+    transform: none !important;
+  }
+  .bts .parallax-media {
+    scale: 1;
+  }
+  .bts *,
+
+  .bts *::before,
+
+  .bts *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* If JavaScript never runs, nothing on the page may stay invisible. */
+
+
+@media (scripting: none) {
+  .bts [data-reveal],
+
+  .bts [data-reveal-lines],
+
+  .bts [data-reveal-hero-lines] {
+    opacity: 1 !important;
+  }
+}

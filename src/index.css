@@ -1,5 +1,45 @@
 @import "tailwindcss";
 
+/* Back to School route (/back-to-school) — the campaign's own palette. These
+   names don't exist in this site's tokens, so they only add utilities. The one
+   that does collide (--font-display: Anton here, Newsreader there) is
+   re-pointed inside .bts in back-to-school/bts.css instead. */
+@theme {
+  /* --- Surfaces -----------------------------------------------------------
+     Warm limestone paper instead of the parent site's pure white: this page
+     is a prospectus, not the academy's product site. */
+  --color-paper: #f2efe9;
+  --color-paper-2: #e7e2d8;
+  --color-card: #fbfaf7;
+
+  /* --- Ink ---------------------------------------------------------------
+     Warm near-black lifted from the crest's outer ring. Never #000. */
+  --color-ink: #17140f;
+  --color-ink-2: #221d17;
+  --color-ink-soft: #56504a; /* 7.1:1 on paper */
+  --color-ink-mute: #6f685f; /* 5.0:1 on paper */
+  --color-line: #ddd6c9;
+  --color-line-dark: #3a332b;
+
+  /* --- Accent (single, brand-owned) --------------------------------------
+     #ff6a00 is the academy's real brand orange. It is the ONLY accent on the
+     page. Orange as a *surface* pairs with ink text (5.0:1); orange as *text*
+     on paper must use --color-orange-ink (5.5:1). Plain #ff6a00 text on paper
+     is 2.7:1 and is never used for copy. */
+  --color-orange: #ff6a00;
+  --color-orange-deep: #d95800;
+  --color-orange-ink: #b34600;
+  --color-orange-tint: #fbeadd;
+
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Shape lock: every rectangle on this page is square. The only round thing
+     is the academy crest, which is round in the logo itself. */
+  --radius-none: 0px;
+}
+
 /* ─── Fonts ──────────────────────────────────────────────────────── */
 @font-face {
   font-family: 'Anton';
