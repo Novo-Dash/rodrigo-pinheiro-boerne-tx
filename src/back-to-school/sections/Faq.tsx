@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Plus } from '@phosphor-icons/react'
 import { Button } from '@/back-to-school/components/ui/Button'
 import { Backdrop } from '@/back-to-school/components/ui/Backdrop'
+import { GradeStripes } from '@/back-to-school/components/ui/Ornaments'
 import { CTA, FAQ_ITEMS } from '@/back-to-school/data/content'
 
 interface Props {
@@ -24,13 +25,25 @@ export function Faq({ onBookClick }: Props) {
       <Backdrop variant="ruled" />
 
       <div className="relative mx-auto max-w-[1240px] px-5 md:px-8">
-        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
-          <h2
-            data-reveal-lines
-            className="bts-font-display self-start text-[1.75rem] leading-[1.14] font-medium sm:text-[2.25rem] lg:sticky lg:top-28 lg:text-[2.75rem]"
-          >
-            Common questions
-          </h2>
+        {/* items-start is what lets the left column stick: on a stretched grid
+            item the sticky box is already as tall as the row and has nothing to
+            travel through. With it, the block rides the whole accordion. */}
+        <div className="grid items-start gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+          <div className="lg:sticky lg:top-24">
+            <div data-reveal className="flex items-center gap-3">
+              <span className="inline-flex items-center border border-[var(--color-ink)] bg-[var(--color-orange)] px-3 py-1.5 text-[0.6875rem] font-semibold tracking-[0.16em] text-[var(--color-ink)] uppercase">
+                Back to School
+              </span>
+              <GradeStripes count={3} className="h-4 w-5 text-[var(--color-orange)]" />
+            </div>
+
+            <h2
+              data-reveal-lines
+              className="bts-font-display mt-5 text-[1.75rem] leading-[1.14] font-medium sm:text-[2.25rem] lg:text-[2.75rem]"
+            >
+              Common questions
+            </h2>
+          </div>
 
           <div data-reveal className="border-t border-[var(--color-ink)]">
             {FAQ_ITEMS.map((item, i) => {

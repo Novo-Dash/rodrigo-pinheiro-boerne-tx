@@ -252,3 +252,96 @@ html.bts-page,
     opacity: 1 !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Marquee bands. Two copies of the same track slide as one; when the first has
+   travelled its full width the animation restarts with the second copy exactly
+   where the first began, so the seam never shows.
+   -------------------------------------------------------------------------- */
+@keyframes bts-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.bts .marquee-track {
+  display: flex;
+  width: max-content;
+  animation: bts-marquee var(--marquee-duration, 38s) linear infinite;
+  will-change: transform;
+}
+
+/* Hovering pauses it, so a reader who wants to finish the line can. */
+.bts .marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bts .marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Booking timeline: a pulse travels step 1 -> 2 -> 3 and repeats, so the three
+   markers read as one flow rather than three separate boxes.
+   -------------------------------------------------------------------------- */
+@keyframes bts-trace-x {
+  0% {
+    transform: scaleX(0);
+  }
+  55%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes bts-trace-y {
+  0% {
+    transform: scaleY(0);
+  }
+  55%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes bts-step-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(255 106 0 / 0);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(255 106 0 / 0.18);
+  }
+}
+
+.bts .trace-x {
+  transform-origin: left center;
+  animation: bts-trace-x 6s ease-in-out infinite;
+}
+
+.bts .trace-y {
+  transform-origin: center top;
+  animation: bts-trace-y 6s ease-in-out infinite;
+}
+
+.bts .step-marker {
+  animation: bts-step-pulse 6s ease-in-out infinite;
+  animation-delay: var(--step-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bts .trace-x,
+  .bts .trace-y {
+    animation: none;
+    transform: none;
+  }
+  .bts .step-marker {
+    animation: none;
+  }
+}

@@ -39,7 +39,7 @@ export function Footer({ onBookClick }: Props) {
             />
             <p
               data-reveal
-              className="bts-font-display mt-7 max-w-[48ch] text-[1.25rem] leading-[1.4] sm:text-[1.5rem] lg:text-[1.75rem]"
+              className="bts-font-display mt-7 max-w-[54ch] text-[1.0625rem] leading-[1.55] sm:text-[1.1875rem] lg:text-[1.3125rem]"
             >
               {FOOTER_COPY}
             </p>

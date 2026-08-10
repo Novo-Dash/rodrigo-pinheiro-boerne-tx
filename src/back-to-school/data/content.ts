@@ -33,6 +33,17 @@ export const CTA = {
   schedule: 'Schedule free back to school class',
 } as const
 
+/** Words for the moving bands. Every phrase is either the client's own copy or
+ *  a plain fact from their site: nothing here is a new claim. */
+export const MARQUEE = [
+  'Back to School',
+  'Free Trial Class',
+  'Kids Jiu-Jitsu',
+  'Beginners Welcome',
+  'World Champion Coaches',
+  'Boerne, Texas',
+] as const
+
 export const HERO = {
   headline: 'This school year, give your child confidence that goes beyond the classroom.',
   body:
@@ -153,10 +164,15 @@ export const REVIEWS = [
 ] as const
 
 export const GALLERY = [
-  { src: '/galeria/7.webp', alt: 'Open training on the mats at the RPBJJ Boerne academy' },
-  { src: '/galeria/3.webp', alt: 'Two young students in white gis drilling a technique' },
-  { src: '/galeria/2.webp', alt: 'Children in blue gis training a position on the mat' },
-  { src: '/galeria/4.webp', alt: 'Coach Nathiely De Jesus working with a student on the mat' },
-  { src: '/galeria/1.webp', alt: 'Students drilling a guard pass during a class' },
-  { src: '/galeria/6.webp', alt: 'The kids class of RPBJJ Boerne together after training' },
+  /* The four 800x1120 shots the academy shot properly, in the big cells. */
+  { src: '/kids.webp', w: 800, h: 1120, big: true, alt: 'The kids class of RPBJJ Boerne together on the mats' },
+  { src: '/Beginners.webp', w: 800, h: 1120, big: true, alt: 'Beginners drilling a technique during class' },
+  { src: '/Women.webp', w: 800, h: 1120, big: true, alt: "Students in the women's class working a position" },
+  { src: '/Advanced.webp', w: 800, h: 1120, big: true, alt: 'Two RPBJJ Boerne athletes with their competition medals' },
+  /* The academy only ever supplied these at 328x240, so they live in the small
+     cells, where they are never displayed above their native size. */
+  { src: '/galeria/7.webp', w: 328, h: 240, big: false, alt: 'Open training on the mats at the academy' },
+  { src: '/galeria/3.webp', w: 328, h: 240, big: false, alt: 'Two young students in white gis drilling' },
+  { src: '/galeria/2.webp', w: 328, h: 240, big: false, alt: 'Children in blue gis training a position' },
+  { src: '/galeria/4.webp', w: 328, h: 240, big: false, alt: 'Coach Nathiely De Jesus working with a student' },
 ] as const

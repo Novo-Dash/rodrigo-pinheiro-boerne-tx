@@ -12,6 +12,8 @@ import { RightFit } from '@/back-to-school/sections/RightFit'
 import { Inside } from '@/back-to-school/sections/Inside'
 import { Faq } from '@/back-to-school/sections/Faq'
 import { Location } from '@/back-to-school/sections/Location'
+import { Marquee } from '@/back-to-school/components/ui/Marquee'
+import { MARQUEE } from '@/back-to-school/data/content'
 import { useModal } from '@/back-to-school/hooks/useModal'
 import { useScrollDepth } from '@/back-to-school/hooks/useScrollDepth'
 import { fbqTrack, ga4Event } from '@/back-to-school/booking/analytics'
@@ -48,12 +50,14 @@ export default function BackToSchoolPage() {
 
       <main id="main-content">
         <Hero onBookClick={handleBookClick} />
+        <Marquee items={MARQUEE} tone="ink" duration={42} />
         <Why onBookClick={handleBookClick} />
         <Coaches />
         <Reviews onBookClick={handleBookClick} />
         <HowToStart onBookClick={handleBookClick} />
         <RightFit onBookClick={handleBookClick} />
         <Inside onBookClick={handleBookClick} />
+        <Marquee items={MARQUEE} tone="orange" duration={34} />
         <Faq onBookClick={handleBookClick} />
         <Location />
       </main>

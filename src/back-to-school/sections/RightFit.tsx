@@ -1,7 +1,6 @@
 import { Check } from '@phosphor-icons/react'
 import { Button } from '@/back-to-school/components/ui/Button'
 import { Backdrop } from '@/back-to-school/components/ui/Backdrop'
-import { Sunburst } from '@/back-to-school/components/ui/Ornaments'
 import { CTA, FIT } from '@/back-to-school/data/content'
 
 interface Props {
@@ -19,19 +18,11 @@ export function RightFit({ onBookClick }: Props) {
       id="right-fit"
       className="relative overflow-hidden border-t border-[var(--color-line)] py-20 lg:py-28"
     >
-      <Backdrop variant="graph" />
+      {/* Sober on purpose: the questions are the section, so the mesh is dots at
+          a wide pitch rather than graph paper, and the ray fan is gone. */}
+      <Backdrop variant="dots" />
 
-      {/* Rays behind the questions, opening downward over the column. */}
-      <Sunburst
-        data-drift="18"
-        rays={20}
-        spread={200}
-        rotate={90}
-        style={{ color: 'rgb(255 106 0 / 0.06)' }}
-        className="pointer-events-none absolute -top-[22rem] left-1/2 hidden h-[44rem] w-[44rem] -translate-x-1/2 lg:block"
-      />
-
-      <div className="relative mx-auto max-w-[760px] px-5 text-center md:px-8">
+      <div className="relative mx-auto max-w-[880px] px-5 text-center md:px-8">
         <h2
           data-reveal-lines
           className="bts-font-display text-[1.75rem] leading-[1.14] font-medium text-balance sm:text-[2.25rem] lg:text-[2.75rem]"
@@ -46,16 +37,26 @@ export function RightFit({ onBookClick }: Props) {
           {FIT.intro}
         </p>
 
-        <ul className="mt-12 grid gap-6 text-left lg:mt-14">
-          {FIT.questions.map((question) => (
-            <li key={question} data-reveal className="flex gap-4">
-              <Check
-                size={20}
-                weight="bold"
-                aria-hidden="true"
-                className="mt-1.5 shrink-0 text-[var(--color-orange-ink)]"
-              />
-              <span className="bts-font-display text-[1.125rem] leading-snug text-[var(--color-ink)] lg:text-[1.375rem]">
+        {/* One card per question. The last one is given the full width so five
+            items fill the grid exactly, with no empty cell at the end. */}
+        <ul className="mt-12 grid gap-4 text-left sm:grid-cols-2 lg:mt-14">
+          {FIT.questions.map((question, i) => (
+            <li
+              key={question}
+              data-reveal
+              className={`group flex items-start gap-4 border border-[var(--color-line)] bg-[var(--color-card)] p-6 transition-[transform,border-color,box-shadow] duration-300 ease-[var(--ease-out-quint)] hover:-translate-y-1 hover:border-[var(--color-orange)] hover:shadow-[0_16px_40px_-24px_rgba(23,20,15,0.35)] lg:p-7 ${
+                i === FIT.questions.length - 1 ? 'sm:col-span-2' : ''
+              }`}
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center border border-[var(--color-line)] transition-colors duration-300 group-hover:border-[var(--color-orange)] group-hover:bg-[var(--color-orange)]">
+                <Check
+                  size={17}
+                  weight="bold"
+                  aria-hidden="true"
+                  className="text-[var(--color-orange-ink)] transition-colors duration-300 group-hover:text-[var(--color-ink)]"
+                />
+              </span>
+              <span className="bts-font-display pt-1 text-[1.0625rem] leading-snug text-[var(--color-ink)] lg:text-[1.1875rem]">
                 {question}
               </span>
             </li>

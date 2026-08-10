@@ -16,32 +16,41 @@ export function Coaches() {
     >
       <Backdrop variant="dots" />
 
-      {/* Half a ray fan rising from the bottom edge, behind the lineage story. */}
-      <Sunburst
-        data-drift="24"
-        rays={18}
-        spread={180}
-        rotate={-90}
-        style={{ color: 'rgb(255 106 0 / 0.07)' }}
-        className="pointer-events-none absolute -bottom-72 left-1/2 hidden h-[36rem] w-[36rem] -translate-x-1/2 lg:block"
-      />
-
       <div className="relative mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-          <figure
-            data-reveal
-            className="order-2 aspect-square overflow-hidden border border-[var(--color-line)] lg:order-1"
-          >
-            <img
-              src="/lutadores.webp"
-              width={629}
-              height={629}
-              alt="Manuel Ribamar and Nathiely De Jesus, head coaches at RPBJJ Boerne"
-              loading="lazy"
-              data-parallax="0.05"
-              className="parallax-media h-full w-full object-cover"
-            />
-          </figure>
+          <div className="order-2 lg:order-1">
+            <figure
+              data-reveal
+              className="aspect-square overflow-hidden border border-[var(--color-line)]"
+            >
+              <img
+                src="/lutadores.webp"
+                width={629}
+                height={629}
+                alt="Manuel Ribamar and Nathiely De Jesus, head coaches at RPBJJ Boerne"
+                loading="lazy"
+                data-parallax="0.05"
+                className="parallax-media h-full w-full object-cover"
+              />
+            </figure>
+
+            {/* The crest's ray fan under the photo, anchored to its left edge so
+                the mark signs the portrait. The fan points up and the wrapper
+                crops the empty lower half of the square viewBox, which is what
+                keeps the rays at their true angle instead of squashing them. */}
+            <div
+              aria-hidden="true"
+              className="mt-7 h-[70px] w-[168px] overflow-hidden"
+            >
+              <Sunburst
+                rays={22}
+                spread={180}
+                rotate={-90}
+                style={{ color: 'rgb(255 106 0 / 0.9)' }}
+                className="h-[168px] w-[168px]"
+              />
+            </div>
+          </div>
 
           <div className="order-1 lg:order-2">
             <h2

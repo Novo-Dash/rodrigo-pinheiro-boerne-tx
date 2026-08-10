@@ -8,20 +8,18 @@ interface Props {
 }
 
 /**
- * Photo mosaic of the academy's own images. Cell sizes vary on purpose: a
- * uniform 3x2 grid of identical tiles would read as stock filler, and these
- * are real classes.
+ * Photo wall of the academy's own images, laid out around what the source files
+ * can actually carry.
+ *
+ * The four properly-shot 800x1120 frames take the tall cells. The four the
+ * academy only supplied at 328x240 sit in the small square cells, where they
+ * render at or below their native width instead of being stretched across half
+ * the viewport, which is what made them look soft before.
  */
-const CELLS = [
-  'col-span-2 aspect-[4/3] sm:col-span-2 sm:row-span-2 sm:aspect-auto',
-  'col-span-1 aspect-square sm:aspect-auto',
-  'col-span-1 aspect-square sm:aspect-auto',
-  'col-span-2 aspect-[2/1] sm:aspect-auto',
-  'col-span-1 aspect-square sm:col-span-2 sm:aspect-auto',
-  'col-span-1 aspect-square sm:col-span-2 sm:aspect-auto',
-]
-
 export function Inside({ onBookClick }: Props) {
+  const big = GALLERY.filter((p) => p.big)
+  const small = GALLERY.filter((p) => !p.big)
+
   return (
     <section
       id="inside"
@@ -44,25 +42,45 @@ export function Inside({ onBookClick }: Props) {
           />
         </div>
 
-        <div className="mt-12 grid grid-cols-2 gap-3 sm:auto-rows-[190px] sm:grid-cols-4 lg:mt-16 lg:auto-rows-[230px] lg:gap-4">
-          {GALLERY.map((photo, i) => (
+        {/* Tall row: the high-resolution frames. */}
+        <div className="mt-12 grid grid-cols-2 gap-3 lg:mt-16 lg:grid-cols-4 lg:gap-4">
+          {big.map((photo, i) => (
             <figure
               key={photo.src}
               data-reveal
-              className={`group overflow-hidden border border-[var(--color-line)] ${CELLS[i]}`}
+              className="group aspect-[3/4] overflow-hidden border border-[var(--color-line)]"
             >
               <img
                 src={photo.src}
                 alt={photo.alt}
                 loading="lazy"
-                width={328}
-                height={240}
-                /* Only the two large cells drift: parallax on a 190px tile is
-                   noise, on a tall one it reads as depth. */
-                {...(i === 0 || i === 3 ? { 'data-parallax': '0.05' } : {})}
-                className={`h-full w-full object-cover transition-transform duration-[600ms] ease-[var(--ease-out-quint)] group-hover:scale-[1.06] ${
+                width={photo.w}
+                height={photo.h}
+                /* Only the outer two drift, or the whole row moves as one slab. */
+                {...(i === 0 || i === 3 ? { 'data-parallax': '0.04' } : {})}
+                className={`h-full w-full object-cover transition-transform duration-[600ms] ease-[var(--ease-out-quint)] group-hover:scale-[1.05] ${
                   i === 0 || i === 3 ? 'parallax-media' : ''
                 }`}
+              />
+            </figure>
+          ))}
+        </div>
+
+        {/* Square row: the small originals, never scaled past what they hold. */}
+        <div className="mt-3 grid grid-cols-2 gap-3 lg:mt-4 lg:grid-cols-4 lg:gap-4">
+          {small.map((photo) => (
+            <figure
+              key={photo.src}
+              data-reveal
+              className="group aspect-[4/3] overflow-hidden border border-[var(--color-line)]"
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                width={photo.w}
+                height={photo.h}
+                className="h-full w-full object-cover transition-transform duration-[600ms] ease-[var(--ease-out-quint)] group-hover:scale-[1.05]"
               />
             </figure>
           ))}
