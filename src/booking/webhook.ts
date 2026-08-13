@@ -1,6 +1,6 @@
 import type { Program, SlotsMap } from './schedule'
 import { PROGRAM_OVERRIDES, isoDate, formatTimeLabel } from './schedule'
-import { getAttribution } from './attribution'
+import { getAttribution, getSourceLabel } from './attribution'
 
 // FIXED for all academies — the shared n8n workflow. Do not parameterize.
 const N8N_ORIGIN = 'https://n8n.novodash.com'
@@ -80,7 +80,7 @@ export function sendLeadWebhook(data: BookingData): void {
     program: data.program.name, // raw GHL calendar name -> CRM Program field (never the alias)
     audience: data.program.audience, // adults | kids — routes the shared workflow
     submittedAt: new Date().toISOString(),
-    source: SOURCE_LABEL,
+    source: getSourceLabel(SOURCE_LABEL),
     ...getAttribution(),
   })
 }
