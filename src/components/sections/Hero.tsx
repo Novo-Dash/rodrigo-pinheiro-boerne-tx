@@ -42,7 +42,7 @@ export function Hero({ onBookClick, className }: HeroProps) {
   return (
     <section
       id="main-content"
-      aria-label="Hero — Start your BJJ journey in Boerne"
+      aria-label="Hero: Start your BJJ journey in Boerne"
       className={cn(
         'relative min-h-screen flex items-center overflow-hidden bg-[#0D0D0D] pt-16 md:pt-20',
         className

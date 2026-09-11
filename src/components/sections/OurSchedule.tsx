@@ -61,7 +61,7 @@ export function OurSchedule() {
                 return (
                   <td key={day} className="align-top px-4 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)]">
                     {daySlots.length === 0 ? (
-                      <span className="text-xs text-[var(--color-text-muted)]">—</span>
+                      <span className="text-xs text-[var(--color-text-muted)]">·</span>
                     ) : (
                       <div className="flex flex-col gap-2">
                         {daySlots.map((slot, i) => (

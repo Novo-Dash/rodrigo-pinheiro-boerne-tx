@@ -8,7 +8,7 @@ export const testimonials: Testimonial[] = [
     avatarColor: '#FF6A00',
     rating: 5,
     timeAgo: '1 year ago',
-    text: 'If you want to start your child of 4 to 5 years in a sport, Brazilian Jiu-Jitsu should be your first option. They even offer classes for parents to join together — it is a true family experience.',
+    text: 'If you want to start your child of 4 to 5 years in a sport, Brazilian Jiu-Jitsu should be your first option. They even offer classes for parents to join together. It is a true family experience.',
   },
   {
     id: 't2',
@@ -44,7 +44,7 @@ export const testimonials: Testimonial[] = [
     avatarColor: '#DC2626',
     rating: 5,
     timeAgo: '1 year ago',
-    text: 'I traveled for work and joined two evening classes. Professor Ribamar\'s classes (Masters World Champion) were incredible! His wife, Nathiely De Jesus, is also a veterinarian — they are such inspiring people both on and off the mat.',
+    text: 'I traveled for work and joined two evening classes. Professor Ribamar\'s classes (Masters World Champion) were incredible! His wife, Nathiely De Jesus, is also a veterinarian. They are such inspiring people both on and off the mat.',
   },
   {
     id: 't6',
@@ -53,6 +53,6 @@ export const testimonials: Testimonial[] = [
     avatarColor: '#FF6A00',
     rating: 5,
     timeAgo: '1 year ago',
-    text: 'I moved from Florida specifically to train with Nathy and Riba — they have won many world titles. This academy is more than a community, it is a family. Teammates genuinely care about each other.',
+    text: 'I moved from Florida specifically to train with Nathy and Riba. They have won many world titles. This academy is more than a community, it is a family. Teammates genuinely care about each other.',
   },
 ]

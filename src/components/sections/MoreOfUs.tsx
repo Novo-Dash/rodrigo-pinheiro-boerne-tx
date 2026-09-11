@@ -22,7 +22,7 @@ export function MoreOfUs() {
           id="gallery-heading"
           label="Gallery"
           title="MORE OF US"
-          subtitle="A positive, welcoming community — on and off the mats."
+          subtitle="A positive, welcoming community, on and off the mats."
           center
         />
       </div>

@@ -15,7 +15,7 @@ export function BrandPanel() {
           Train with World Champion coaches
         </h3>
         <ul className="mt-6 grid gap-3 text-sm text-white/80">
-          <BulletItem>Free trial class — no commitment</BulletItem>
+          <BulletItem>Free trial class. No commitment</BulletItem>
           <BulletItem>Kids, adults &amp; women&apos;s programs</BulletItem>
           <BulletItem>Beginners welcome, no experience needed</BulletItem>
         </ul>
