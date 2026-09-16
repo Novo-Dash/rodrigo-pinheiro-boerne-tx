@@ -27,11 +27,11 @@ export function About() {
             className="text-fluid-section uppercase text-white mb-6"
             style={{ fontFamily: 'var(--font-display)', fontWeight: 700 }}
           >
-            RODRIGO PINHEIRO BJJ
+            RELENTLESS SQUAD
           </h2>
           <div className="flex flex-col gap-1 text-fluid-body text-white/60 leading-relaxed text-center">
-            <span>Rodrigo Pinheiro BJJ is a Brazilian Jiu-Jitsu team built on technical excellence.</span>
-            <span>Led by Rodrigo Pinheiro, a Brazilian black belt with decades of experience as both an athlete and a coach,</span>
+            <span>Relentless Squad is a Brazilian Jiu-Jitsu team built on technical excellence.</span>
+            <span>Led by two Brazilian black belts with decades of experience as both athletes and coaches,</span>
             <span>the team focuses on creating beginner- and family-friendly gyms across the United States.</span>
           </div>
         </div>

@@ -4,8 +4,8 @@ import { getTimesForDay, getFirstBookableDate, formatTimeLabel, formatDateLong }
 import { Calendar } from './Calendar'
 import type { BookingData } from './webhook'
 
-const ACADEMY_PHONE = '+1 (210) 867-6156'
-const ACADEMY_PHONE_HREF = 'tel:+12108676156'
+const ACADEMY_PHONE = '+1 (830) 816-0484'
+const ACADEMY_PHONE_HREF = 'tel:+18308160484'
 
 interface Step2ScheduleProps {
   data: BookingData

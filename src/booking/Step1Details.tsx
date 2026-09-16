@@ -4,8 +4,8 @@ import { displayName } from './schedule'
 import type { BookingData } from './webhook'
 import type { ProgramsState } from './BookingForm'
 
-const ACADEMY_PHONE = '+1 (210) 867-6156'
-const ACADEMY_PHONE_HREF = 'tel:+12108676156'
+const ACADEMY_PHONE = '+1 (830) 816-0484'
+const ACADEMY_PHONE_HREF = 'tel:+18308160484'
 
 interface Step1DetailsProps {
   data: BookingData
@@ -90,7 +90,7 @@ export function Step1Details({ data, programs, onChange, onNext }: Step1DetailsP
               autoComplete="tel"
               required
               className={inputClass}
-              placeholder="(210) 000-0000"
+              placeholder="(830) 000-0000"
             />
           </Field>
         </div>

@@ -73,10 +73,10 @@ export function Footer({ onBookClick }: FooterProps) {
             <ul className="flex flex-col gap-3 text-sm text-white/60" role="list">
               <li>
                 <a
-                  href="tel:+12108676156"
+                  href="tel:+18308160484"
                   className="hover:text-white transition-colors"
                 >
-                  +1 (210) 867-6156
+                  +1 (830) 816-0484
                 </a>
               </li>
               <li>

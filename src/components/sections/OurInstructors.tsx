@@ -8,14 +8,27 @@ const instructors = [
   {
     id: 'manuel',
     firstName: 'Manuel',
-    fullName: 'Manuel',
-    credential: 'World Champion Masters · Black Belt',
+    fullName: 'Manuel Ribamar',
+    highlight: 'Currently competing in UFC BJJ',
+    titles: [
+      'World Champion · No-Gi',
+      'World Champion · Gi',
+      'European Champion',
+      '2x Pan American Champion · Gi',
+      '2x Pan American Champion · No-Gi',
+    ],
   },
   {
     id: 'nathi',
     firstName: 'Nathiely',
     fullName: 'Nathiely De Jesus',
-    credential: 'World Champion · Black Belt',
+    highlight: 'ADCC Veteran',
+    titles: [
+      '5x World Champion · Gi',
+      '3x World Champion · No-Gi',
+      '2x Pan American Champion',
+      '2x European Champion',
+    ],
   },
 ]
 
@@ -61,22 +74,36 @@ export function OurInstructors({ onBookClick }: OurInstructorsProps) {
 
           </div>
 
-          {/* Two floating VSL-style cards at the bottom */}
-          <div className="flex gap-4 mt-6">
+          {/* Two floating credential cards at the bottom */}
+          <div className="grid gap-4 mt-6 sm:grid-cols-2">
             {instructors.map((coach) => (
               <div
                 key={coach.id}
-                className="flex-1 bg-white border-2 border-black p-4 shadow-[8px_8px_0_0_var(--color-accent)]"
+                className="bg-white border-2 border-black p-4 shadow-[8px_8px_0_0_var(--color-accent)]"
               >
                 <div className="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] mb-1">
-                  Championship-level
+                  Head Coach
                 </div>
                 <div className="text-base font-normal uppercase leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
                   {coach.fullName}
                 </div>
-                <div className="text-xs text-[var(--color-text-secondary)] mt-1">
-                  {coach.credential}
+                <div className="mt-2 inline-block bg-[var(--color-accent)] px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+                  {coach.highlight}
                 </div>
+                <ul className="mt-3 flex flex-col gap-1.5 border-t-2 border-black pt-3" role="list">
+                  {coach.titles.map((title) => (
+                    <li
+                      key={title}
+                      className="flex items-start gap-2 text-sm leading-snug text-[var(--color-text-secondary)]"
+                    >
+                      <span
+                        className="mt-[7px] block h-1.5 w-1.5 shrink-0 bg-[var(--color-accent)]"
+                        aria-hidden="true"
+                      />
+                      {title}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
