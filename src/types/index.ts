@@ -26,10 +26,4 @@ export interface FaqItem {
   answer: string
 }
 
-export interface ScheduleSlot {
-  day: string
-  time: string
-  programType: 'kids' | 'adults' | 'women' | 'all'
-  label: string
-}
 

@@ -14,6 +14,7 @@ import { Footer } from '@/components/layout/Footer'
 import {
   Hero,
   OurClasses,
+  OurSchedule,
   Testimonials,
   HowToStart,
   OurInstructors,
@@ -56,6 +57,7 @@ function LandingPage() {
       <main>
         <Hero onBookClick={() => handleBookClick()} />
         <OurClasses onBookClick={handleOpenWithTag} />
+        <OurSchedule onBookClick={handleBookClick} />
         <Testimonials onBookClick={() => handleBookClick()} />
         <HowToStart onBookClick={() => handleBookClick()} />
         <OurInstructors onBookClick={() => handleBookClick()} />
