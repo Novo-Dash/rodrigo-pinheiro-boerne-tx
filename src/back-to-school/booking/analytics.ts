@@ -5,6 +5,7 @@
 // lead/booking flow.
 
 import { getFbc, getFbp } from './fb'
+import { clarityIdentify, mirrorToClarity } from './clarity'
 
 /** Meta Pixel id — the SAME id as index.html's base snippet and api/capi.ts. */
 export const PIXEL_ID = '1616564495915462'
@@ -41,6 +42,7 @@ function newEventId(): string {
  * The mirror goes out even when fbq is blocked: that's the case it covers.
  */
 export function fbqTrack(event: string, params?: Record<string, unknown>): void {
+  mirrorToClarity(event, params)
   if (typeof window === 'undefined') return
   const eventId = newEventId()
   if (typeof window.fbq === 'function') {
@@ -65,6 +67,7 @@ export function fbqTrack(event: string, params?: Record<string, unknown>): void 
 /** Advanced Matching (§7.6.4): remember the visitor for the mirrored events
  *  that follow, and hand the same fields to the Pixel (fbq hashes in-browser). */
 export function identify(fields: IdentifyFields): void {
+  clarityIdentify(fields.email, fields.name)
   identified = { ...identified, ...fields }
   if (typeof window === 'undefined' || typeof window.fbq !== 'function') return
   const data: Record<string, string> = {}
