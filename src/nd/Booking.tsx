@@ -443,7 +443,7 @@ function Success({
     <div className="nd-stack">
       <Head step={3} title={waitlist ? "You're on the waitlist" : booked ? "You're booked" : 'We have your request'}
         text={waitlist
-          ? <>{first ? `Thanks, ${first}. ` : ''}We will reach out as soon as a spot opens{program ? ` in ${program}` : ''}.</>
+          ? <>{first ? `Thanks, ${first}. ` : ''}We will reach out as soon as a spot opens{program ? ` in ${program.split('|')[0].trim()}` : ''}.</>
           : booked
           ? <>{first ? `${first}, a` : 'A'} confirmation is on its way to your email.</>
           : <>{first ? `Thanks, ${first}. ` : ''}We will call you to confirm your class, normally the same day.</>} />
@@ -457,12 +457,14 @@ function Success({
             <a href={mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(address)}`} target="_blank" rel="noopener noreferrer">{address}</a></li>
         ) : null}
       </ul>
-      <div className="nd-stack-xs">
+      {waitlist ? null : (
+        <div className="nd-stack-xs">
         <p className="nd-label">Before you come in</p>
         <ul className="nd-tips">
           {copy.tips.map((t) => <li key={t}>{t}</li>)}
         </ul>
       </div>
+      )}
       {onDone ? <button type="button" onClick={onDone} className="nd-button">Done</button> : null}
       {onAnother ? <button type="button" onClick={onAnother} className="nd-link nd-another">+ Book another child</button> : null}
     </div>

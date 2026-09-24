@@ -86,9 +86,10 @@ export function shortName(p: Program) {
   return labelOf(p.calendar_id, p.name).replace(/\s*\([^)]*\d[^)]*\)\s*/g, ' ').trim()
 }
 
-/** "Little Champions (4-6 years old)" -> "4-6 years old". */
+/** "Little Champions (4-6 years old)" -> "4-6 years old". The label's age wins (the academy asked for it); else GHL's. */
 export function ageHint(p: Program) {
-  return p.name.match(/\(([^)]*\d[^)]*)\)/)?.[1] ?? null
+  const age = /\(([^)]*\d[^)]*)\)/
+  return labelOf(p.calendar_id, p.name).match(age)?.[1] ?? p.name.match(age)?.[1] ?? null
 }
 
 const GROUP_ORDER = [/adult/i, /kid|teen|youth|champion/i]
