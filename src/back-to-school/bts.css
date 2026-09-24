@@ -345,3 +345,23 @@ html.bts-page,
     animation: none;
   }
 }
+
+/* Novo Dash booking kit (src/nd) on this route: the campaign's square blocks,
+   ink on orange buttons, Newsreader titles and Geist text. */
+html.bts-page .nd {
+  --nd-accent: var(--color-orange);
+  --nd-accent-ink: var(--color-ink);
+  --nd-ink: var(--color-ink);
+  --nd-muted: var(--color-ink-soft);
+  --nd-bg: #ffffff;
+  --nd-surface: var(--color-card);
+  --nd-line: var(--color-line);
+  --nd-panel: var(--color-ink);
+  --nd-font: var(--font-sans);
+  --nd-font-display: var(--font-display);
+  --nd-display-case: none;
+  --nd-display-weight: 500;
+  --nd-radius: 0;
+  --nd-button-radius: 0;
+  --nd-dialog-radius: 0;
+}

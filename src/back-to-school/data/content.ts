@@ -26,6 +26,19 @@ export const ACADEMY = {
   mainSite: 'https://rpbjjboerne.com/',
 } as const
 
+/** Booking modal and /back-to-school/book panel: the campaign's own texts,
+ *  verbatim from the booking modal it had before the Novo Dash kit. */
+export const BOOKING_COPY = {
+  eyebrow: 'Back to School',
+  panelTitle: "Book your child's free trial class",
+  bullets: [
+    'Free trial class, no commitment',
+    'Beginner-friendly, no experience needed',
+    'Email and SMS confirmation with all the details',
+  ],
+  proof: '',
+}
+
 /** CTA labels, exactly as the brief writes them for each section. */
 export const CTA = {
   hero: 'Book a free trial class',

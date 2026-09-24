@@ -280,3 +280,23 @@ h1, h2, h3, h4, h5, h6 {
   scroll-snap-align: start;
   flex-shrink: 0;
 }
+
+/* ─── Novo Dash booking kit (src/nd): the modal and /book take the brand from these ─── */
+.nd {
+  --nd-accent: var(--color-accent);
+  --nd-accent-ink: #ffffff;
+  --nd-ink: var(--color-text);
+  --nd-muted: var(--color-text-secondary);
+  --nd-bg: #ffffff;
+  --nd-surface: var(--color-bg-subtle);
+  --nd-line: var(--color-border);
+  --nd-error: var(--color-danger);
+  --nd-panel: var(--color-text);
+  --nd-font: var(--font-body);
+  --nd-font-display: var(--font-display);
+  --nd-display-case: uppercase;
+  --nd-display-weight: 700;
+  --nd-radius: var(--radius-input);
+  --nd-button-radius: 0;
+  --nd-dialog-radius: var(--radius-modal);
+}

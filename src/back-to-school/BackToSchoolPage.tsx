@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import './bts.css'
-import { BookingModal } from '@/back-to-school/components/BookingModal'
+import { BookingProvider, useBooking } from '@/nd'
 import { Header } from '@/back-to-school/components/layout/Header'
 import { Footer } from '@/back-to-school/components/layout/Footer'
 import { Hero } from '@/back-to-school/sections/Hero'
@@ -13,16 +13,21 @@ import { Inside } from '@/back-to-school/sections/Inside'
 import { Faq } from '@/back-to-school/sections/Faq'
 import { Location } from '@/back-to-school/sections/Location'
 import { Marquee } from '@/back-to-school/components/ui/Marquee'
-import { MARQUEE } from '@/back-to-school/data/content'
-import { useModal } from '@/back-to-school/hooks/useModal'
-import { useScrollDepth } from '@/back-to-school/hooks/useScrollDepth'
-import { fbqTrack, ga4Event } from '@/back-to-school/booking/analytics'
+import { BOOKING_COPY, MARQUEE } from '@/back-to-school/data/content'
 import { initMotion } from '@/back-to-school/motion'
 
+/* The campaign's leads carry their own source and the campaign's modal texts. */
 export default function BackToSchoolPage() {
-  const { isOpen, defaultTag, open, close } = useModal()
+  return (
+    <BookingProvider source="Landing Page - Back to School" copy={BOOKING_COPY}>
+      <Page />
+    </BookingProvider>
+  )
+}
+
+function Page() {
+  const { open } = useBooking()
   const rootRef = useRef<HTMLDivElement>(null)
-  useScrollDepth()
 
   useEffect(() => {
     if (!rootRef.current) return
@@ -36,13 +41,9 @@ export default function BackToSchoolPage() {
     return () => document.documentElement.classList.remove('bts-page')
   }, [])
 
-  // Every CTA on the page is the same intent, so they all land here: open the
-  // modal and fire ViewContent once the parent shows booking intent.
-  const handleBookClick = useCallback(() => {
-    open(null)
-    fbqTrack('ViewContent', { content_name: 'Trial Booking' })
-    ga4Event('view_content', { content_name: 'Trial Booking' })
-  }, [open])
+  // Every CTA on the page is the same intent, so they all land here: the
+  // Novo Dash booking modal (ViewContent fires inside it).
+  const handleBookClick = useCallback(() => open(), [open])
 
   return (
     <div ref={rootRef} className="bts">
@@ -63,8 +64,6 @@ export default function BackToSchoolPage() {
       </main>
 
       <Footer onBookClick={handleBookClick} />
-
-      <BookingModal isOpen={isOpen} defaultTag={defaultTag} onClose={close} />
     </div>
   )
 }

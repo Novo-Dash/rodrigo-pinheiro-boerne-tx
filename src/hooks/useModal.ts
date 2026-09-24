@@ -1,28 +1,10 @@
-import { useState, useCallback } from 'react'
+import { useBooking } from '@/nd'
 
 export type ModalTag = 'kids' | 'adults' | 'women' | 'both' | null
 
-interface UseModalReturn {
-  isOpen: boolean
-  defaultTag: ModalTag
-  open: (tag?: ModalTag) => void
-  close: () => void
-}
-
-export function useModal(): UseModalReturn {
-  const [isOpen, setIsOpen] = useState(false)
-  const [defaultTag, setDefaultTag] = useState<ModalTag>(null)
-
-  const open = useCallback((tag: ModalTag = null) => {
-    setDefaultTag(tag)
-    setIsOpen(true)
-    document.body.style.overflow = 'hidden'
-  }, [])
-
-  const close = useCallback(() => {
-    setIsOpen(false)
-    document.body.style.overflow = ''
-  }, [])
-
-  return { isOpen, defaultTag, open, close }
+// Bridge to the Novo Dash kit: the page keeps calling open(tag); the kit's
+// modal lists every class, so the tag no longer pre-selects one.
+export function useModal() {
+  const { open } = useBooking()
+  return { open: (_tag?: ModalTag) => open() }
 }

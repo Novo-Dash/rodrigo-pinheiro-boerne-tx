@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { fetchPrograms } from '@/booking/webhook'
+import { fetchPrograms } from '@/nd'
 import { TRIAL_CALENDARS, toMinutes } from '@/data/schedule'
 import type { ClassSession } from '@/data/schedule'
 
 /**
  * Live layer over the printed schedule: which classes still have a free-trial
- * seat. Source is `fetchPrograms` — the SAME get_programs call the booking
- * modal makes, sharing its module-level cache, so the section costs no extra
+ * seat. Source is `fetchPrograms` — the SAME class list the booking
+ * modal loads, sharing its module-level cache, so the section costs no extra
  * request.
  *
  * The call is fired by an IntersectionObserver 800px ahead of the section, not
