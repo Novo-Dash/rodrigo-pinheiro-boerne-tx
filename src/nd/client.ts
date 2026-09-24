@@ -24,7 +24,13 @@ export default {
     ],
     "proof": "Excellent · 5.0 · Google Reviews",
     "formTitle": "Reserve Your Free Class",
-    "formText": "No experience needed. No commitment."
+    "formText": "No experience needed. No commitment.",
+    "tips": [
+      "We will have a gi waiting for you",
+      "Bring water",
+      "Arrive a few minutes early so someone can show you around"
+    ],
+    "consent": "By submitting, you agree to be contacted about your class."
   },
   "source": "Landing Page - Main",
   "tracking": {
