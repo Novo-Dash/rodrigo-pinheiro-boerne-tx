@@ -16,6 +16,7 @@ export type Client = {
     formText?: string
     confirm?: string
     tips?: string[]
+    consent?: string
   }
   /** CRM source when the visit carries no paid click id. */
   source: string

@@ -190,8 +190,9 @@ export function BookingForm({
     return (
       <Success booked={booked} waitlist={isWaitlist(program)} date={data.date} time={data.time} program={program ? shortName(program) : ''}
         name={data.fullName.trim()} onDone={onDone}
-        // Another child, same parent: back to step 1 with the contact kept; the lead is not sent again.
-        onAnother={booked && program?.audience === 'kids' ? () => { patch({ childName: '', date: '', time: '' }); setStep(1) } : undefined} />
+        // Another child (or class), same person: back to step 1 with the contact kept; the lead is not sent again.
+        another={booked ? (program?.audience === 'kids' ? 'child' : 'class') : null}
+        onAnother={() => { patch({ childName: '', date: '', time: '' }); setStep(1) }} />
     )
   }
 
@@ -328,6 +329,7 @@ function Step1({
       <div className="nd-stack-xs">
         <button type="submit" className="nd-button">Continue <Icon d="M5 12h14M13 6l6 6-6 6" size={18} /></button>
         <p className="nd-foot">Next: pick the day and time of your free class.</p>
+        {copy.consent ? <p className="nd-foot">{copy.consent}</p> : null}
       </div>
     </form>
   )
@@ -433,8 +435,8 @@ function Calendar({
 }
 
 function Success({
-  booked, waitlist, date, time, program, name, onDone, onAnother,
-}: { booked: boolean; waitlist: boolean; date: string; time: string; program: string; name: string; onDone?: () => void; onAnother?: () => void }) {
+  booked, waitlist, date, time, program, name, onDone, another, onAnother,
+}: { booked: boolean; waitlist: boolean; date: string; time: string; program: string; name: string; onDone?: () => void; another: 'child' | 'class' | null; onAnother: () => void }) {
   // Whoever filled the form reads this (the parent on a kids booking); the email goes to them.
   const copy = useCopy()
   const first = name.split(/\s+/)[0]
@@ -466,7 +468,7 @@ function Success({
       </div>
       )}
       {onDone ? <button type="button" onClick={onDone} className="nd-button">Done</button> : null}
-      {onAnother ? <button type="button" onClick={onAnother} className="nd-link nd-another">+ Book another child</button> : null}
+      {another ? <button type="button" onClick={onAnother} className="nd-link nd-another">+ Book another {another}</button> : null}
     </div>
   )
 }
