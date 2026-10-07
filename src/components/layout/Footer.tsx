@@ -122,7 +122,7 @@ export function Footer({ onBookClick }: FooterProps) {
 
         <div className="mt-16 border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/30">
           <p>© 2026 Rodrigo Pinheiro BJJ Boerne. All rights reserved.</p>
-          <p>By Novo Dash</p>
+          <p>By <a href="https://lp.novodash.com/site?utm_source=rodrigo-pinheiro-boerne-tx&utm_medium=referral&utm_campaign=lp-footer" target="_blank" rel="noopener" className="transition-colors hover:text-white">Novo Dash</a></p>
         </div>
       </div>
     </footer>

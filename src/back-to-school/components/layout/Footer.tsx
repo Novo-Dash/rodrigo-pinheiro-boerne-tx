@@ -90,7 +90,7 @@ export function Footer({ onBookClick }: Props) {
 
         <div className="mt-16 flex flex-col gap-3 border-t border-white/15 pt-7 text-[0.8125rem] text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 All rights reserved.</p>
-          <p>By Novo Dash</p>
+          <p>By <a href="https://lp.novodash.com/site?utm_source=rodrigo-pinheiro-boerne-tx&utm_medium=referral&utm_campaign=lp-footer" target="_blank" rel="noopener" className="transition-colors hover:text-white">Novo Dash</a></p>
         </div>
       </div>
     </footer>
