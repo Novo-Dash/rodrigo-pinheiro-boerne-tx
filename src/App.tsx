@@ -23,6 +23,7 @@ import {
   StickyCTABar,
 } from '@/components/sections'
 import { useModal } from '@/hooks/useModal'
+import HalloweenLayer from '@/halloween/HalloweenLayer' // Halloween provisorio: sai com esta linha, a do JSX e src/halloween
 
 function LandingPage() {
   const { open } = useModal()
@@ -50,6 +51,8 @@ function LandingPage() {
       <Footer onBookClick={() => handleBookClick()} />
 
       <StickyCTABar onBookClick={() => handleBookClick()} />
+
+      <HalloweenLayer />
     </div>
   )
 }
