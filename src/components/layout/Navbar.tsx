@@ -90,7 +90,7 @@ export function Navbar({ onBookClick }: NavbarProps) {
         {/* Desktop CTA + mobile hamburger */}
         <div className="flex items-center gap-2">
           <div className="hidden md:block">
-            <MagneticButton onClick={onBookClick}>
+            <MagneticButton onClick={onBookClick} className="text-white!">
               Book Free Trial
             </MagneticButton>
           </div>
@@ -143,7 +143,7 @@ export function Navbar({ onBookClick }: NavbarProps) {
             <button
               type="button"
               onClick={() => { setMobileOpen(false); onBookClick() }}
-              className="mt-2 w-full inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--color-accent)] px-8 text-sm font-bold uppercase tracking-wide text-[var(--color-accent-ink)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:bg-[var(--color-accent-hover)] transition-all duration-200"
+              className="mt-2 w-full inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--color-accent)] px-8 text-sm font-bold uppercase tracking-wide text-white shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:bg-[var(--color-accent-hover)] transition-all duration-200"
             >
               Book Free Trial
             </button>
