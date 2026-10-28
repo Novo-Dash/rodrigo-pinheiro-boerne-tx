@@ -55,7 +55,7 @@ export function Navbar({ onBookClick }: NavbarProps) {
         <a href="#main-content" className="flex items-center gap-2.5">
           <img
             src="/logo-crest.webp"
-            alt="Rodrigo Pinheiro BJJ Boerne"
+            alt="Relentless BJJ Squad"
             className="h-11 md:h-12 w-auto"
             width={277}
             height={490}
@@ -67,7 +67,7 @@ export function Navbar({ onBookClick }: NavbarProps) {
               color: scrolled ? 'var(--color-text)' : '#fff',
             }}
           >
-            RPBJJ Boerne
+            Relentless BJJ Squad
           </span>
         </a>
 

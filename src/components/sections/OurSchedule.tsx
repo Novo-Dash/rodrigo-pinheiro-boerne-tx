@@ -34,7 +34,7 @@ const TRACK_TAG: Record<Track, ModalTag> = {
 
 /** One colour per audience, all four already in the site's tokens: the bar on
  *  top of each card is what lets you find your class without reading the grid.
- *  Free trial is NOT a colour here, it is the offset shadow plus the badge, so
+ *  Free trial is the ochre offset shadow plus the badge, never a top bar, so
  *  the two signals never compete for the same pixel. */
 const TRACK_COLOR: Record<Track, string> = {
   adults: 'var(--color-text)',
@@ -70,16 +70,26 @@ function academyWeekday(): number {
   }
 }
 
-function StatTile({ value, label }: { value: string; label: string }) {
+function StatTile({ value, label, accent }: { value: string; label: string; accent?: boolean }) {
   return (
-    <div className="border-2 border-black bg-white px-4 py-5 text-center sm:px-5">
+    <div
+      className={`border-2 border-black px-4 py-5 text-center sm:px-5 ${
+        accent ? 'bg-[var(--color-text)] shadow-[6px_6px_0_0_var(--color-accent)]' : 'bg-white'
+      }`}
+    >
       <p
-        className="text-3xl leading-none uppercase text-[var(--color-text)] sm:text-4xl"
+        className={`text-3xl leading-none uppercase sm:text-4xl ${
+          accent ? 'text-[var(--color-accent)]' : 'text-[var(--color-text)]'
+        }`}
         style={{ fontFamily: 'var(--font-display)' }}
       >
         {value}
       </p>
-      <p className="mx-auto mt-2 max-w-[22ch] text-[14px] leading-snug text-[var(--color-text-secondary)]">
+      <p
+        className={`mx-auto mt-2 max-w-[22ch] text-[14px] leading-snug ${
+          accent ? 'text-white/75' : 'text-[var(--color-text-secondary)]'
+        }`}
+      >
         {label}
       </p>
     </div>
@@ -139,7 +149,7 @@ function SessionCard({
       type="button"
       onClick={() => onBookClick(TRACK_TAG[session.track])}
       aria-label={`Book a free trial: ${session.title}${detail ? `, ${detail}` : ''}, ${DAY_LABELS[session.day].long} ${range}`}
-      className={`${skin} cursor-pointer shadow-[4px_4px_0_0_#000] transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#000] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:translate-y-0`}
+      className={`${skin} cursor-pointer shadow-[4px_4px_0_0_var(--color-accent)] transition-[transform,box-shadow] duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--color-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-x-0 motion-reduce:hover:translate-y-0`}
     >
       {body}
     </button>
@@ -198,9 +208,9 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
           label={`first class on the mats, last one ends ${scheduleStats.lastClassEnd}`}
         />
         {loaded && trialCount > 0 ? (
-          <StatTile value={String(trialCount)} label="classes open for a free trial right now" />
+          <StatTile value={String(trialCount)} label="classes open for a free trial right now" accent />
         ) : (
-          <StatTile value="Free" label="your first class, every program" />
+          <StatTile value="Free" label="your first class, every program" accent />
         )}
       </div>
 
@@ -219,7 +229,7 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
               aria-pressed={active}
               className={`min-h-[40px] cursor-pointer border-2 border-black px-4 text-[13px] font-bold uppercase tracking-wide transition-colors duration-200 ${
                 active
-                  ? 'bg-[var(--color-text)] text-white'
+                  ? 'bg-[var(--color-accent)] text-[var(--color-accent-ink)]'
                   : 'bg-white text-[var(--color-text)] hover:bg-[var(--color-accent-subtle)]'
               }`}
             >
@@ -246,7 +256,7 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
         ))}
         <span className="flex items-center gap-2 text-[14px] text-[var(--color-text-secondary)]">
           <span
-            className="block h-3.5 w-6 border-2 border-black bg-white shadow-[3px_3px_0_0_#000]"
+            className="block h-3.5 w-6 border-2 border-black bg-white shadow-[3px_3px_0_0_var(--color-accent)]"
             aria-hidden="true"
           />
           Free trial open, tap to book
@@ -254,7 +264,7 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
       </div>
 
       {/* Calendar, desktop */}
-      <div className="hidden border-2 border-black bg-white shadow-[10px_10px_0_0_var(--color-text)] lg:block">
+      <div className="hidden border-2 border-black bg-white shadow-[10px_10px_0_0_var(--color-accent)] lg:block">
         <table className="w-full table-fixed border-collapse">
           <caption className="sr-only">
             Weekly class schedule, {scheduleStats.dayRange}, times local to Boerne, Texas
@@ -387,7 +397,7 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
                 aria-pressed={active}
                 className={`min-h-[44px] cursor-pointer border-2 border-black px-1 text-[15px] uppercase leading-none transition-colors duration-200 ${
                   active
-                    ? 'bg-[var(--color-text)] text-white'
+                    ? 'bg-[var(--color-accent)] text-[var(--color-accent-ink)]'
                     : day === today
                       ? 'bg-[var(--color-accent-subtle)] text-[var(--color-text)]'
                       : 'bg-white text-[var(--color-text)]'
@@ -401,7 +411,7 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
           })}
         </div>
 
-        <div className="border-2 border-black bg-white shadow-[8px_8px_0_0_var(--color-text)]">
+        <div className="border-2 border-black bg-white shadow-[8px_8px_0_0_var(--color-accent)]">
           <p className="flex items-baseline justify-between gap-3 border-b-2 border-black bg-[var(--color-text)] px-4 py-3">
             <span
               className="text-[18px] uppercase leading-none text-white"

@@ -284,6 +284,90 @@ h1, h2, h3, h4, h5, h6 {
   flex-shrink: 0;
 }
 
+/* ─── Hero CTA: a stack of plates ────────────────────────────────
+   Two layers sit under the face. At rest they peek out (the stack reads
+   on touch screens too); on hover the face lifts, the layers fan out, a
+   cream fill sweeps in under the label and the arrow is replaced by a new one. */
+.hero-cta {
+  --ease-cta: cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  max-width: calc(100% - 16px);
+  margin-right: 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.hero-cta__layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transition: transform 520ms var(--ease-cta), opacity 520ms var(--ease-cta);
+}
+.hero-cta__layer--mid {
+  background: rgba(var(--accent-rgb), 0.28);
+  border: 1.5px solid var(--color-accent);
+  transform: translate(5px, 5px);
+}
+.hero-cta__layer--back {
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  transform: translate(10px, 10px);
+  transition-delay: 40ms;
+}
+.hero-cta__face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 58px;
+  padding: 0 28px 0 32px;
+  overflow: hidden;
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 520ms var(--ease-cta), box-shadow 520ms var(--ease-cta);
+}
+.hero-cta__fill {
+  position: absolute;
+  inset: 0;
+  background: #f2e6d0;
+  transform: translateX(-101%);
+  transition: transform 560ms cubic-bezier(0.7, 0, 0.2, 1);
+}
+.hero-cta__label { position: relative; }
+.hero-cta__arrow {
+  position: relative;
+  display: grid;
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+}
+.hero-cta__arrow > svg {
+  grid-area: 1 / 1;
+  transition: transform 420ms var(--ease-cta);
+}
+.hero-cta__arrow > svg + svg { transform: translateX(-130%); }
+
+@media (hover: hover) {
+  .hero-cta:hover .hero-cta__face {
+    transform: translate(-4px, -4px);
+    box-shadow: 0 18px 40px -12px rgba(var(--accent-rgb), 0.55);
+  }
+  .hero-cta:hover .hero-cta__layer--mid  { transform: translate(6px, 6px); }
+  .hero-cta:hover .hero-cta__layer--back { transform: translate(14px, 14px); border-color: rgba(255, 255, 255, 0.6); }
+  .hero-cta:hover .hero-cta__fill { transform: translateX(0); }
+  .hero-cta:hover .hero-cta__arrow > svg:first-child { transform: translateX(130%); }
+  .hero-cta:hover .hero-cta__arrow > svg + svg { transform: translateX(0); transition-delay: 90ms; }
+}
+.hero-cta:active .hero-cta__face { transform: translate(3px, 3px); box-shadow: none; transition-duration: 120ms; }
+.hero-cta:active .hero-cta__layer { transform: translate(3px, 3px); transition-duration: 120ms; }
+.hero-cta:focus-visible { outline: none; }
+.hero-cta:focus-visible .hero-cta__face { outline: 2px solid #fff; outline-offset: 3px; }
+
 /* ─── Novo Dash booking kit (src/nd): the modal and /book take the brand from these ─── */
 .nd {
   --nd-accent: var(--color-accent);

@@ -18,7 +18,7 @@ export function Footer({ onBookClick }: FooterProps) {
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   Start your journey{' '}
-                  <span style={{ color: 'var(--color-accent)' }}>· RPBJJ Boerne ·</span>
+                  <span style={{ color: 'var(--color-accent)' }}>· Relentless BJJ Squad ·</span>
                 </span>
               ))}
             </div>
@@ -33,13 +33,13 @@ export function Footer({ onBookClick }: FooterProps) {
           <div className="flex flex-col gap-4">
             <img
               src="/logo.webp"
-              alt="Rodrigo Pinheiro BJJ"
+              alt="Relentless BJJ Squad"
               className="h-36 w-auto self-start"
               width={534}
               height={561}
             />
             <p className="text-sm text-white/50 leading-relaxed max-w-xs">
-              Rodrigo Pinheiro BJJ Boerne is a Brazilian Jiu-Jitsu academy led by World Champion head coaches, built to serve students of all ages and experience levels.
+              Relentless BJJ Squad is a Brazilian Jiu-Jitsu academy led by World Champion head coaches, built to serve students of all ages and experience levels.
             </p>
           </div>
 
@@ -123,7 +123,7 @@ export function Footer({ onBookClick }: FooterProps) {
         </div>
 
         <div className="mt-16 border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/30">
-          <p>© 2026 Rodrigo Pinheiro BJJ Boerne. All rights reserved.</p>
+          <p>© 2026 Relentless BJJ Squad. All rights reserved.</p>
           <p>By <a href="https://lp.novodash.com/site?utm_source=rodrigo-pinheiro-boerne-tx&utm_medium=referral&utm_campaign=lp-footer" target="_blank" rel="noopener" className="transition-colors hover:text-white">Novo Dash</a></p>
         </div>
       </div>

@@ -60,8 +60,8 @@ export function OurInstructors({ onBookClick }: OurInstructorsProps) {
             {/* Single image filling the card */}
             <div className="relative flex-1 overflow-hidden bg-neutral-200">
               <img
-                src="/11.png"
-                alt="Manuel e Nathiely, Head Coaches"
+                src="/coaches.webp"
+                alt="Manuel and Nathiely, head coaches of Relentless BJJ Squad"
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />

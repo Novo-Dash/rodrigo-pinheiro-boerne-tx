@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 interface HeroProps {
@@ -117,14 +116,22 @@ export function Hero({ onBookClick, className }: HeroProps) {
             className="text-fluid-body text-white/75 max-w-2xl"
             style={{ opacity: 0 }}
           >
-            Led by World Champion coaches, RP Boerne has created a welcoming space for all ages and fitness levels where everyone can start with confidence. Improvement on and off the mats is seen within weeks.
+            Led by World Champion coaches, Relentless BJJ Squad has created a welcoming space for all ages and fitness levels where everyone can start with confidence. Improvement on and off the mats is seen within weeks.
           </p>
 
           <div ref={ctaRef} className="flex flex-wrap justify-center gap-3" style={{ opacity: 0 }}>
-            <Button onClick={onBookClick} size="lg">
-              Book my first free trial class
-              <ArrowRight />
-            </Button>
+            <button type="button" onClick={onBookClick} className="hero-cta">
+              <span className="hero-cta__layer hero-cta__layer--back" aria-hidden="true" />
+              <span className="hero-cta__layer hero-cta__layer--mid" aria-hidden="true" />
+              <span className="hero-cta__face">
+                <span className="hero-cta__fill" aria-hidden="true" />
+                <span className="hero-cta__label">Book my first free trial class</span>
+                <span className="hero-cta__arrow" aria-hidden="true">
+                  <ArrowRight />
+                  <ArrowRight />
+                </span>
+              </span>
+            </button>
           </div>
 
         </div>
