@@ -8,6 +8,7 @@ interface HeroProps {
 }
 
 export function Hero({ onBookClick, className }: HeroProps) {
+  const logoRef     = useRef<HTMLImageElement>(null)
   const headingRef  = useRef<HTMLHeadingElement>(null)
   const subtitleRef = useRef<HTMLParagraphElement>(null)
   const ctaRef      = useRef<HTMLDivElement>(null)
@@ -15,7 +16,11 @@ export function Hero({ onBookClick, className }: HeroProps) {
   const ctxRef      = useRef<{ revert: () => void } | null>(null)
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // The inline opacity:0 waits for the timeline; without motion, show everything now.
+      for (const r of [logoRef, headingRef, subtitleRef, ctaRef]) r.current?.style.setProperty('opacity', '1')
+      return
+    }
     let cancelled = false
 
     async function animate() {
@@ -24,7 +29,8 @@ export function Hero({ onBookClick, className }: HeroProps) {
       ctxRef.current?.revert()
       ctxRef.current = gsap.context(() => {
         const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-        tl.fromTo(headingRef.current,  { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.2)
+        tl.fromTo(logoRef.current,     { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.1)
+          .fromTo(headingRef.current,  { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.2)
           .fromTo(subtitleRef.current, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.35)
           .fromTo(ctaRef.current,      { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.7 }, 0.48)
           .fromTo(imageRef.current,    { autoAlpha: 0, scale: 1.03 }, { autoAlpha: 1, scale: 1, duration: 1.1 }, 0.1)
@@ -82,6 +88,17 @@ export function Hero({ onBookClick, className }: HeroProps) {
 
       <div className="relative mx-auto w-full max-w-[1280px] px-6 py-16 md:px-10 md:py-24">
         <div className="flex flex-col items-center text-center gap-6">
+
+          <img
+            ref={logoRef}
+            src="/logo.webp"
+            alt="Relentless BJJ Squad"
+            className="h-24 md:h-32 w-auto"
+            width={534}
+            height={561}
+            fetchPriority="high"
+            style={{ opacity: 0 }}
+          />
 
           <h1
             ref={headingRef}

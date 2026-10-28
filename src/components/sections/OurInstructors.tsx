@@ -87,7 +87,7 @@ export function OurInstructors({ onBookClick }: OurInstructorsProps) {
                 <div className="text-base font-normal uppercase leading-tight" style={{ fontFamily: 'var(--font-display)' }}>
                   {coach.fullName}
                 </div>
-                <div className="mt-2 inline-block bg-[var(--color-accent)] px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
+                <div className="mt-2 inline-block bg-[var(--color-accent)] px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-[var(--color-accent-ink)]">
                   {coach.highlight}
                 </div>
                 <ul className="mt-3 flex flex-col gap-1.5 border-t-2 border-black pt-3" role="list">

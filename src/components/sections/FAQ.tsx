@@ -15,7 +15,7 @@ export function FAQ() {
 
         {/* Left — title */}
         <div className="lg:col-span-4">
-          <div className="inline-block bg-[var(--color-accent)] px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white mb-4">
+          <div className="inline-block bg-[var(--color-accent)] px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-[var(--color-accent-ink)] mb-4">
             FAQ
           </div>
           <h2
@@ -48,7 +48,7 @@ export function FAQ() {
                 >
                   <span
                     className="shrink-0 text-sm font-bold uppercase tracking-widest"
-                    style={{ color: 'var(--color-accent)' }}
+                    style={{ color: 'var(--color-accent-dark)' }}
                   >
                     {String(i + 1).padStart(2, '0')}
                   </span>

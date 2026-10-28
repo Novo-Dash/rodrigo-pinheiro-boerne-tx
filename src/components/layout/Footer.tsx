@@ -34,7 +34,9 @@ export function Footer({ onBookClick }: FooterProps) {
             <img
               src="/logo.webp"
               alt="Rodrigo Pinheiro BJJ"
-              className="h-14 w-auto object-contain self-start"
+              className="h-36 w-auto self-start"
+              width={534}
+              height={561}
             />
             <p className="text-sm text-white/50 leading-relaxed max-w-xs">
               Rodrigo Pinheiro BJJ Boerne is a Brazilian Jiu-Jitsu academy led by World Champion head coaches, built to serve students of all ages and experience levels.
@@ -113,7 +115,7 @@ export function Footer({ onBookClick }: FooterProps) {
             <button
               type="button"
               onClick={onBookClick}
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-none bg-[var(--color-accent)] px-6 text-xs font-bold uppercase tracking-wide text-white hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(255,106,0,0.35)] hover:-translate-y-0.5 transition-all duration-200"
+              className="mt-6 inline-flex min-h-[44px] items-center rounded-none bg-[var(--color-accent)] px-6 text-xs font-bold uppercase tracking-wide text-[var(--color-accent-ink)] hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:-translate-y-0.5 transition-all duration-200"
             >
               Book Free Class
             </button>

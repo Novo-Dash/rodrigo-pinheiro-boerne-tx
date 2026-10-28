@@ -26,7 +26,7 @@ export function StickyCTABar({ onBookClick }: StickyCTABarProps) {
         <button
           type="button"
           onClick={onBookClick}
-          className="w-full inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--color-accent)] text-sm font-bold uppercase tracking-wide text-white shadow-[0_8px_30px_rgba(255,106,0,0.35)] hover:bg-[var(--color-accent-hover)] hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+          className="w-full inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--color-accent)] text-sm font-bold uppercase tracking-wide text-[var(--color-accent-ink)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:bg-[var(--color-accent-hover)] hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
         >
           Book Free Trial Class →
         </button>

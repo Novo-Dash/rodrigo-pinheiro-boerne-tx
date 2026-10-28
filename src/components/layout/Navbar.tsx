@@ -54,11 +54,11 @@ export function Navbar({ onBookClick }: NavbarProps) {
         {/* Logo */}
         <a href="#main-content" className="flex items-center gap-2.5">
           <img
-            src="/logo.webp"
+            src="/logo-crest.webp"
             alt="Rodrigo Pinheiro BJJ Boerne"
-            className="h-10 w-10 object-contain"
-            width={40}
-            height={40}
+            className="h-11 md:h-12 w-auto"
+            width={277}
+            height={490}
           />
           <span
             className="text-xl font-normal uppercase tracking-tight leading-none transition-colors duration-300"
@@ -143,7 +143,7 @@ export function Navbar({ onBookClick }: NavbarProps) {
             <button
               type="button"
               onClick={() => { setMobileOpen(false); onBookClick() }}
-              className="mt-2 w-full inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--color-accent)] px-8 text-sm font-bold uppercase tracking-wide text-white shadow-[0_8px_30px_rgba(255,106,0,0.35)] hover:bg-[var(--color-accent-hover)] transition-all duration-200"
+              className="mt-2 w-full inline-flex min-h-[52px] items-center justify-center rounded-none bg-[var(--color-accent)] px-8 text-sm font-bold uppercase tracking-wide text-[var(--color-accent-ink)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:bg-[var(--color-accent-hover)] transition-all duration-200"
             >
               Book Free Trial
             </button>

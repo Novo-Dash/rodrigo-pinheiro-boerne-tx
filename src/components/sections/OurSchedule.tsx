@@ -39,8 +39,8 @@ const TRACK_TAG: Record<Track, ModalTag> = {
 const TRACK_COLOR: Record<Track, string> = {
   adults: 'var(--color-text)',
   kids: 'var(--color-accent)',
-  // Split, not a fifth hue: two shades of orange side by side are the same
-  // shape at a glance, half ink and half orange is not.
+  // Split, not a fifth hue: two shades of ochre side by side are the same
+  // shape at a glance, half ink and half ochre is not.
   women: 'linear-gradient(90deg, var(--color-text) 0 50%, var(--color-accent) 50% 100%)',
   muaythai: 'var(--color-text-muted)',
 }
@@ -277,7 +277,7 @@ export function OurSchedule({ onBookClick }: OurScheduleProps) {
                       isToday ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-text)]'
                     }`}
                   >
-                    {/* Ink on orange, never white: white on #FF6A00 is 2.9:1. */}
+                    {/* Ink on the ochre, never white: white on it is 3.5:1. */}
                     <span
                       className={`block text-[16px] uppercase leading-none ${
                         isToday ? 'text-[var(--color-text)]' : 'text-white'

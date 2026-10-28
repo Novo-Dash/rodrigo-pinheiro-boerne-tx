@@ -21,7 +21,7 @@ export function Button({
 
   const variants = {
     primary:
-      'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:shadow-[0_12px_40px_rgba(var(--accent-rgb),0.50)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none',
+      'bg-[var(--color-accent)] text-[var(--color-accent-ink)] hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:shadow-[0_12px_40px_rgba(var(--accent-rgb),0.50)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none',
     dark:
       'bg-[var(--color-text)] text-white border-2 border-[var(--color-text)] hover:bg-transparent hover:text-[var(--color-text)] active:scale-[0.97]',
     secondary:
