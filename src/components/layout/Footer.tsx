@@ -98,7 +98,7 @@ export function Footer({ onBookClick }: FooterProps) {
             {/* Social icons */}
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://www.instagram.com/rpbjj_boerne/"
+                href="https://www.instagram.com/relentlessbjjsquad/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="h-10 w-10 grid place-items-center border border-white/20 hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-colors"
