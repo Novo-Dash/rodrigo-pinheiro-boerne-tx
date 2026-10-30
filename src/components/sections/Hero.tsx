@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import BfHeroTip from '@/blackfriday/BfHeroTip'
 
 interface HeroProps {
   onBookClick: () => void
@@ -82,6 +83,7 @@ export function Hero({ onBookClick, className }: HeroProps) {
 
       <div className="relative mx-auto w-full max-w-[1280px] px-6 py-16 md:px-10 md:py-24">
         <div className="flex flex-col items-center text-center gap-6">
+          <BfHeroTip />
 
           <h1
             ref={headingRef}

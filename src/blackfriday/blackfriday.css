@@ -1,0 +1,589 @@
+/* Roupagem de Black Friday, variação FAIXAS (V1).
+   Tudo por token: para vestir outro cliente, troque só este bloco. O preto é o
+   da data; o acento é o do cliente. */
+:root {
+  --bf-ink: #0a0a0a;
+  --bf-paper: #fafafa;
+  --bf-accent: var(--color-accent, #ff6a00);
+  --bf-accent-ink: #ffffff;
+  --bf-muted: #a3a3a3;
+  --bf-lead: #d4d4d4;
+  --bf-display: var(--font-display, 'Anton', sans-serif);
+  /* Anton só tem o peso 400 */
+  --bf-display-weight: 400;
+  --bf-body: var(--font-body, 'DM Sans', sans-serif);
+  /* faixa preta de jiu-jitsu (referência do Lucas, 21/10) */
+  --bf-belt: #161616;
+  --bf-belt-hi: #2c2c2c;
+  --bf-belt-lo: #0b0b0b;
+  --bf-belt-red: #c8302b;
+  --bf-belt-ink: #f3f0e9;
+  --bf-stitch: rgba(255, 255, 255, 0.3);
+  /* ponta rasgada das fitas: um zigue-zague em cada extremidade */
+  --bf-torn: polygon(
+    0 6%, 2.2% 0, 97.8% 0, 100% 9%, 98.6% 26%, 100% 44%, 98.4% 62%, 100% 80%, 98.2% 100%,
+    1.8% 100%, 0 90%, 1.4% 72%, 0 54%, 1.6% 36%, 0 20%
+  );
+}
+
+.bf-glyph {
+  width: 0.78em;
+  height: 0.78em;
+  flex: none;
+  transform: translateY(-0.04em);
+}
+
+.bf-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ───────────── a faixa preta (base de todas as faixas da variação) ───────────── */
+.bf-belt {
+  position: relative;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Crect y='2' width='5' height='1' fill='%23fff' fill-opacity='.07'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, var(--bf-belt-hi), var(--bf-belt) 42%, var(--bf-belt-lo));
+  color: var(--bf-belt-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+}
+/* pesponto das duas bordas */
+.bf-belt::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  bottom: 4px;
+  z-index: 1;
+  border-block: 1px dashed var(--bf-stitch);
+  pointer-events: none;
+}
+.bf-belt em { font-style: normal; color: var(--bf-accent); }
+/* barra de grau da faixa preta: vermelha, com 4 listras brancas */
+.bf-rank {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  align-self: stretch;
+  width: 64px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.28)),
+    var(--bf-belt-red);
+}
+.bf-rank::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  background: repeating-linear-gradient(90deg, var(--bf-belt-ink) 0 5px, transparent 5px 11px);
+  opacity: 0.95;
+}
+.bf-tip { flex: none; align-self: stretch; width: 12px; }
+
+/* ───────────── faixa corrida embaixo da navbar ───────────── */
+.bf-ticker {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  height: 34px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.bf-ticker[data-hidden] {
+  opacity: 0;
+}
+.bf-ticker-band {
+  position: relative;
+  height: 100%;
+  box-shadow: 0 10px 22px -12px rgba(0, 0, 0, 0.7);
+  transform: translateY(-100%);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.9s;
+}
+.bf-ticker[data-ready] .bf-ticker-band {
+  transform: none;
+}
+.bf-ticker-item .bf-glyph { color: var(--bf-accent); }
+.bf-ticker-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: bf-marquee 46s linear infinite;
+}
+.bf-ticker-group {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.bf-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 30px;
+  font: var(--bf-display-weight) 17px/1 var(--bf-display);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+@keyframes bf-marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* ───────────── fitas no card do vídeo ───────────── */
+.bf-ctape {
+  position: absolute;
+  z-index: 3;
+  width: 210px;
+  height: 36px;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.45));
+  /* pedaço de fita colado de leve torto, não na diagonal (Lucas, 20/10) */
+  transform: rotate(var(--bf-tilt));
+  animation: bf-slap 0.5s cubic-bezier(0.2, 1.5, 0.35, 1) 1.5s both;
+}
+.bf-ctape > span {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+}
+.bf-ctape b {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  text-align: center;
+  font: var(--bf-display-weight) 18px/1 var(--bf-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.bf-ctape--tl { --bf-tilt: -6deg; width: 228px; left: -40px; top: -17px; }
+.bf-ctape--br {
+  --bf-tilt: 4deg;
+  right: -46px;
+  bottom: -22px;
+  width: 256px;
+  animation-delay: 1.7s;
+}
+@keyframes bf-slap {
+  from { opacity: 0; transform: rotate(var(--bf-tilt)) scale(1.4); }
+  to { opacity: 1; transform: rotate(var(--bf-tilt)) scale(1); }
+}
+
+/* ───────────── bloco da oferta (2ª seção) ───────────── */
+.bf-offer {
+  position: relative;
+  z-index: 2;
+  background: var(--bf-ink);
+  color: var(--bf-paper);
+}
+.bf-offer-inner {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 24px 178px;
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  grid-template-areas:
+    'head art'
+    'act art';
+  column-gap: 56px;
+}
+.bf-head { grid-area: head; align-self: end; }
+.bf-art { grid-area: art; align-self: center; }
+.bf-act { grid-area: act; align-self: start; margin-top: 34px; }
+
+.bf-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  height: 42px;
+  padding: 0 0 0 18px;
+  border-radius: 2px;
+  font: var(--bf-display-weight) 19px/1 var(--bf-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: rotate(-2deg);
+  margin: 0 0 26px;
+}
+.bf-kicker-text {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.bf-kicker .bf-glyph { color: var(--bf-accent); }
+.bf-h2 {
+  margin: 0;
+  font: var(--bf-display-weight) clamp(44px, 4.9vw, 74px)/0.92 var(--bf-display);
+  letter-spacing: 0.005em;
+  text-wrap: balance;
+  text-transform: uppercase;
+  color: var(--bf-paper);
+}
+.bf-h2-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+}
+.bf-h2-line { display: block; text-wrap: balance; }
+.bf-h2-accent { color: var(--bf-accent); }
+.bf-lead {
+  margin: 24px 0 0;
+  max-width: 44ch;
+  font: 400 18px/1.6 var(--bf-body);
+  color: var(--bf-lead);
+}
+
+.bf-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 26px 20px 32px;
+  background: var(--bf-accent);
+  color: var(--bf-accent-ink);
+  font: 700 16px/1 var(--bf-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 0 0 0 var(--bf-paper);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bf-cta svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: square;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .bf-cta:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0 0 var(--bf-paper); }
+  .bf-cta:hover svg { transform: translateX(3px); }
+}
+.bf-cta:active { transform: none; box-shadow: 0 0 0 0 var(--bf-paper); }
+.bf-cta:focus-visible { outline: 3px solid var(--bf-paper); outline-offset: 4px; }
+.bf-fine {
+  margin: 16px 0 0;
+  font: italic 400 13px/1.4 var(--bf-body);
+  color: var(--bf-muted);
+}
+
+/* ── a arte: disco no acento, rash guard, etiqueta, calendário ── */
+.bf-art {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 1 / 1.02;
+  justify-self: center;
+}
+.bf-disk {
+  position: absolute;
+  left: 11%;
+  top: 7%;
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--bf-accent);
+}
+/* retícula de impressão num canto do disco */
+.bf-disk::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(color-mix(in srgb, var(--bf-ink) 22%, transparent) 1.3px, transparent 1.6px);
+  background-size: 10px 10px;
+  -webkit-mask-image: radial-gradient(circle at 82% 84%, #000 0, transparent 58%);
+  mask-image: radial-gradient(circle at 82% 84%, #000 0, transparent 58%);
+}
+.bf-disk::after {
+  content: '';
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--bf-accent) 42%, transparent);
+}
+.bf-shirt {
+  position: absolute;
+  left: 13%;
+  top: 8%;
+  width: 74%;
+  height: auto;
+  overflow: visible;
+}
+/* no ombro direito: o cruzamento da gola, que é o que faz ler kimono, fica à vista */
+.bf-sticker-pos {
+  position: absolute;
+  left: 66%;
+  top: 22%;
+  transform: translate(-50%, -50%) rotate(9deg);
+}
+.bf-sticker {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 9px 20px 6px;
+  background: var(--bf-paper);
+  color: var(--bf-ink);
+  clip-path: var(--bf-torn);
+}
+.bf-sticker > span {
+  font: 600 10px/1 var(--bf-body);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.bf-sticker > strong {
+  font: var(--bf-display-weight) 30px/1 var(--bf-display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.bf-price {
+  position: absolute;
+  left: 68%;
+  top: 60.5%;
+  width: 31%;
+  transform-origin: 18% 0;
+  transform: rotate(9deg);
+}
+.bf-price-string {
+  display: block;
+  margin-left: calc(18% - 1px);
+  width: 2px;
+  height: 34px;
+  background: var(--bf-paper);
+  opacity: 0.8;
+}
+.bf-price-card {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 26px 14px 14px;
+  background: var(--bf-paper);
+  color: var(--bf-ink);
+  clip-path: polygon(18% 0, 82% 0, 100% 14%, 100% 100%, 0 100%, 0 14%);
+  box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.6);
+}
+.bf-price-hole {
+  position: absolute;
+  top: 9px;
+  left: calc(18% - 6px);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bf-ink);
+}
+.bf-price-label {
+  font: 600 10px/1.2 var(--bf-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.bf-price-value {
+  font: var(--bf-display-weight) clamp(48px, 6vw, 68px)/0.9 var(--bf-display);
+}
+.bf-price-note {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1.5px dashed color-mix(in srgb, var(--bf-ink) 35%, transparent);
+  font: 500 11px/1.25 var(--bf-body);
+}
+
+.bf-cal {
+  position: absolute;
+  left: 0;
+  top: 58%;
+  width: 26%;
+  display: grid;
+  justify-items: center;
+  padding: 0 0 12px;
+  background: var(--bf-paper);
+  color: var(--bf-ink);
+  transform: rotate(-8deg);
+  box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.6);
+}
+.bf-cal-rings {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  height: 22px;
+  align-items: center;
+  background: var(--bf-accent);
+}
+.bf-cal-rings i {
+  width: 6px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--bf-ink);
+  transform: translateY(-9px);
+}
+.bf-cal-label {
+  margin-top: 9px;
+  font: 600 9px/1 var(--bf-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.bf-cal-value {
+  font: var(--bf-display-weight) clamp(40px, 5vw, 56px)/0.95 var(--bf-display);
+  text-transform: uppercase;
+}
+
+/* ── o X de fitas na emenda com a próxima seção ── */
+.bf-x {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -112px;
+  height: 244px;
+  overflow: hidden;
+  z-index: 3;
+  pointer-events: none;
+}
+.bf-x-tape {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  top: 50%;
+  height: 52px;
+  margin-top: -26px;
+  box-shadow: 0 10px 18px -10px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.bf-x-a { transform: rotate(-6.5deg); }
+.bf-x-b { transform: rotate(5.5deg); }
+.bf-x-tape .bf-rank { position: absolute; top: 0; bottom: 0; width: 84px; }
+.bf-x-tape .bf-rank::after { left: 14px; right: 14px; background: repeating-linear-gradient(90deg, var(--bf-belt-ink) 0 6px, transparent 6px 14px); }
+.bf-x-tape .bf-rank--l { left: 10.5%; }
+.bf-x-tape .bf-rank--r { right: 10.5%; }
+.bf-x-text {
+  position: absolute;
+  inset: 0 21%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  /* o nome fica nas metades de fora: o cruzamento no meio fica limpo */
+  justify-content: space-between;
+}
+.bf-x-text > span {
+  font: var(--bf-display-weight) 26px/1 var(--bf-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ───────────── celular ───────────── */
+@media (max-width: 860px) {
+  .bf-offer-inner {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'head' 'art' 'act';
+    padding: 84px 20px 132px;
+  }
+  .bf-art { max-width: 400px; margin: 40px auto 0; }
+  .bf-act { margin-top: 30px; }
+}
+@media (max-width: 600px) {
+  .bf-ticker { height: 28px; }
+  .bf-ticker-item { font-size: 15px; gap: 10px; padding-right: 24px; }
+  .bf-ticker-band::before { top: 3px; }
+  .bf-ticker-band::after { bottom: 3px; }
+  .bf-ctape { height: 28px; }
+  .bf-ctape b { font-size: 14px; }
+  .bf-ctape .bf-rank { width: 44px; }
+  .bf-ctape .bf-rank::after { left: 8px; right: 8px; background: repeating-linear-gradient(90deg, var(--bf-belt-ink) 0 4px, transparent 4px 8px); }
+  .bf-ctape--tl { width: 168px; left: -14px; top: -14px; }
+  .bf-ctape--br { width: 190px; right: -20px; bottom: -18px; }
+  .bf-kicker { height: 36px; gap: 12px; }
+  .bf-kicker .bf-rank { width: 48px; }
+  .bf-kicker { font-size: 17px; }
+  .bf-lead { font-size: 16px; }
+  .bf-cta { width: 100%; justify-content: center; padding: 19px 18px; font-size: 15px; }
+  .bf-x { bottom: -84px; height: 176px; }
+  .bf-x-tape { height: 40px; margin-top: -20px; }
+  .bf-x-a { transform: rotate(-9deg); }
+  .bf-x-b { transform: rotate(8deg); }
+  .bf-x-tape .bf-rank { width: 56px; }
+  .bf-x-tape .bf-rank::after { left: 10px; right: 10px; background: repeating-linear-gradient(90deg, var(--bf-belt-ink) 0 4px, transparent 4px 10px); }
+  .bf-x-tape .bf-rank--l { left: 7%; }
+  .bf-x-tape .bf-rank--r { right: 7%; }
+  /* no celular não cabem dois nomes: só a faixa de cima leva, centrada no cruzamento */
+  .bf-x-text { inset: 0; justify-content: center; }
+  .bf-x-text > span { font-size: 19px; }
+  .bf-x-a .bf-x-text > span:nth-child(2), .bf-x-b .bf-x-text { display: none; }
+  .bf-sticker > strong { font-size: 24px; }
+  .bf-sticker { padding: 7px 14px 5px; }
+  .bf-price { left: 63%; width: 37%; }
+  .bf-price-card { padding: 22px 10px 11px; }
+  .bf-price-label { letter-spacing: 0.08em; font-size: 9px; }
+  .bf-price-string { height: 24px; }
+  .bf-act { margin-top: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-ticker-track { animation: none; }
+  .bf-ticker-band { transition: none; }
+  .bf-ctape { animation: none; }
+}
+/* os 3 benefícios em texto, verbatim, embaixo da frase */
+.bf-list { display: grid; gap: 10px; margin: 26px 0 0; padding: 0; list-style: none; }
+.bf-list li { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 16px; line-height: 1.35; color: var(--bf-paper); }
+.bf-list li::before {
+  content: '';
+  flex: none;
+  width: 22px;
+  height: 8px;
+  border-radius: 2px;
+  /* ponta de faixa preta com a barra de grau, o mesmo desenho da roupagem */
+  background: repeating-linear-gradient(90deg, var(--bf-belt-red) 0 4px, var(--bf-belt-ink) 4px 6px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.bf-sticker > span, .bf-sticker > strong, .bf-cal-value, .bf-price-value { white-space: nowrap; }
+@media (max-width: 600px) {
+  .bf-list li { font-size: 15px; }
+}
+/* o kicker espera a entrada em scale 1.35 e, em 360px, passava da tela;
+   clip só no eixo X deixa o X de faixas sair por baixo */
+.bf-offer { overflow-x: clip; }
+
+
+/* ───────────── RP Boerne: encaixe na página ───────────── */
+/* a faixa corrida (34px, 28 no celular) mora embaixo da navbar fixa: o hero e as âncoras descem o mesmo tanto */
+.bf-ticker ~ main #main-content { padding-top: calc(4rem + 28px); }
+html:has(.bf-ticker) { scroll-padding-top: 104px; }
+@media (min-width: 601px) {
+  .bf-ticker ~ main #main-content { padding-top: calc(4rem + 34px); }
+}
+@media (min-width: 768px) {
+  .bf-ticker ~ main #main-content { padding-top: calc(5rem + 34px); }
+  html:has(.bf-ticker) { scroll-padding-top: 124px; }
+}
+
+/* a faixa acima do H1 (o hero não tem card para as pontas) */
+.bf-hero-tip { margin: 0; animation: bf-slap 0.5s cubic-bezier(0.2, 1.5, 0.35, 1) 1.1s both; --bf-tilt: -2deg; }
+.bf-hero-tip .bf-kicker-text { white-space: nowrap; }
+.bf-hero-tip-more { display: inline-flex; align-items: center; gap: 10px; color: var(--bf-belt-ink); }
+.bf-hero-tip-sep { width: 6px; height: 6px; border-radius: 50%; background: var(--bf-accent); }
+@media (max-width: 520px) {
+  .bf-hero-tip-more { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bf-hero-tip { animation: none; }
+}
+/* o X de faixas desce 112px na seção seguinte e chegava a 16px do eyebrow dela:
+   borda transparente pinta o fundo da própria seção e abre a folga */
+.bf-offer + section { border-top: 48px solid transparent; }
+@media (max-width: 600px) {
+  .bf-offer + section { border-top-width: 24px; }
+}

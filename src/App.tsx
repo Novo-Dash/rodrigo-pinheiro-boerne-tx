@@ -23,6 +23,9 @@ import {
   StickyCTABar,
 } from '@/components/sections'
 import { useModal } from '@/hooks/useModal'
+// Black Friday (V1, faixas): camada provisória, sai com estas 2 linhas, as 2 montagens, a do Hero e src/blackfriday.
+import BfTicker from '@/blackfriday/BfTicker'
+import BfOffer from '@/blackfriday/BfOffer'
 
 function LandingPage() {
   const { open } = useModal()
@@ -33,9 +36,11 @@ function LandingPage() {
   return (
     <div className="grain">
       <Navbar onBookClick={() => handleBookClick()} />
+      <BfTicker />
 
       <main>
         <Hero onBookClick={() => handleBookClick()} />
+        <BfOffer />
         <OurClasses onBookClick={handleBookClick} />
         <OurSchedule onBookClick={handleBookClick} />
         <Testimonials onBookClick={() => handleBookClick()} />
