@@ -587,3 +587,164 @@ html:has(.bf-ticker) { scroll-padding-top: 104px; }
 @media (max-width: 600px) {
   .bf-offer + section { border-top-width: 24px; }
 }
+
+/* ───────────── box de Black Friday no painel do formulário (Lucas, 03/11) ─────────────
+   Entra por portal no .nd-panel do kit (BfFormBox). Classes só nossas: nada
+   do kit é sobrescrito. Desktop: box com a faixa amarrada no alto, nó na borda
+   direita e as duas pontas caindo para fora. Celular: só uma tira de faixa. */
+.bf-fbox {
+  position: relative;
+  margin: 0 0 0 -2px;
+  padding: 56px 18px 18px;
+  border-radius: 14px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 6L6 0' stroke='%23fff' stroke-opacity='.035'/%3E%3C/svg%3E"),
+    linear-gradient(160deg, #1c1c1c, #101010 60%, #0c0c0c);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+  font-family: var(--bf-body);
+}
+/* pesponto por dentro da borda, como a costura de uma faixa */
+.bf-fbox::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 9px;
+  pointer-events: none;
+}
+.bf-fbox p { margin: 0; }
+.bf-fbox-strap {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: -16px;
+  right: 6px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  transform: rotate(-2deg);
+  transform-origin: right center;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.bf-fbox-word {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: var(--bf-display-weight, 400) 17px/1 var(--bf-display);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.bf-fbox-word .bf-glyph { color: var(--bf-accent); }
+/* o nó fica em cima da borda direita do box; as pontas saem dele */
+.bf-fbox-knot {
+  position: absolute;
+  z-index: 3;
+  top: 6px;
+  right: -14px;
+  width: 30px;
+  height: 38px;
+}
+.bf-fbox-nub {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  transform: rotate(-8deg);
+  box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 -2px 0 rgba(0, 0, 0, 0.5);
+}
+.bf-fbox-tail {
+  position: absolute;
+  top: 22px;
+  left: 12px;
+  height: 18px;
+  display: flex;
+  justify-content: flex-end;
+  transform-origin: 0 50%;
+  transform: rotate(var(--r));
+  box-shadow: 0 6px 10px -6px rgba(0, 0, 0, 0.9);
+}
+.bf-fbox-tail--a { --r: 84deg; width: 74px; }
+.bf-fbox-tail--b { --r: 58deg; width: 52px; }
+.bf-fbox-tail .bf-rank { width: 26px; }
+.bf-fbox-tail .bf-rank::after { left: 4px; right: 4px; background: repeating-linear-gradient(90deg, var(--bf-belt-ink) 0 2.5px, transparent 2.5px 5.5px); }
+.bf-fbox-title {
+  font: var(--bf-display-weight, 400) 34px/0.94 var(--bf-display);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--bf-accent-on-dark, var(--bf-accent));
+}
+.bf-fbox-title span { display: block; color: var(--bf-paper); }
+.bf-fbox-value {
+  margin-top: 10px !important;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--bf-lead);
+}
+.bf-fbox-value b { color: var(--bf-paper); font-weight: 700; }
+.bf-fbox-value i { font-style: normal; margin: 0 2px; opacity: 0.5; }
+.bf-fbox-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px !important;
+  padding: 6px 10px 5px;
+  border-radius: 6px;
+  background: var(--bf-accent);
+  color: var(--bf-accent-ink);
+  font: 700 11px/1 var(--bf-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.bf-fbox-slim { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bf-fbox-strap { animation: bf-fbox-tie 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .bf-fbox-nub { animation: bf-fbox-knot 0.3s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  .bf-fbox-tail { animation: bf-fbox-drop 0.35s 0.28s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+}
+@keyframes bf-fbox-tie { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes bf-fbox-knot { from { opacity: 0; transform: rotate(-60deg) scale(0.3); } to { opacity: 1; transform: rotate(-8deg) scale(1); } }
+@keyframes bf-fbox-drop { from { opacity: 0; transform: rotate(0deg) scaleX(0.4); } to { opacity: 1; transform: rotate(var(--r)) scaleX(1); } }
+
+/* celular: o painel do kit vira cabeçalho; o box vira uma tira de faixa só */
+@media (max-width: 767px) {
+  .bf-fbox { margin: 12px -44px 0 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+  .bf-fbox::before, .bf-fbox-full { display: none; }
+  .bf-fbox-slim {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 32px;
+    padding-right: 12px;
+    border-radius: 4px;
+    overflow: hidden;
+    font: var(--bf-display-weight, 400) 15px/1 var(--bf-display);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bf-fbox-slim .bf-rank { width: 34px; }
+  .bf-fbox-slim .bf-rank::after { left: 6px; right: 6px; background: repeating-linear-gradient(90deg, var(--bf-belt-ink) 0 3px, transparent 3px 6.5px); }
+  .bf-fbox-slim span { position: relative; z-index: 2; overflow: hidden; text-overflow: ellipsis; }
+}
+/* tela baixa (notebook): o painel do kit não tem 200px sobrando; o box vira
+   uma linha só, com a faixa amarrada em cima (medido em 1280x720 e 1024x768) */
+@media (min-width: 768px) and (max-height: 899px) {
+  .bf-fbox { padding: 54px 16px 12px; margin-block: -8px; }
+  .bf-fbox-title { font-size: 22px; white-space: nowrap; }
+  .bf-fbox-title span { display: inline; }
+  .bf-fbox-value, .bf-fbox-chip { display: none; }
+}
+
+/* Boerne: a Anton é mais larga que a Bebas da W2B; a tira do celular aperta o espaçamento */
+@media (max-width: 767px) {
+  .bf-fbox-slim { font-size: 14px; letter-spacing: 0.1em; }
+}
+/* celular estreito (360px): a barra de grau da tira encolhe para o texto não cortar */
+@media (max-width: 380px) {
+  .bf-fbox-slim { gap: 8px; }
+  .bf-fbox-slim .bf-rank { width: 22px; }
+}

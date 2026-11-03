@@ -25,6 +25,7 @@ import {
 import { useModal } from '@/hooks/useModal'
 // Black Friday (V1, faixas): camada provisória, sai com estas 2 linhas, as 2 montagens, a do Hero e src/blackfriday.
 import BfTicker from '@/blackfriday/BfTicker'
+import BfFormBox from '@/blackfriday/BfFormBox'
 import BfOffer from '@/blackfriday/BfOffer'
 
 function LandingPage() {
@@ -37,6 +38,7 @@ function LandingPage() {
     <div className="grain">
       <Navbar onBookClick={() => handleBookClick()} />
       <BfTicker />
+      <BfFormBox />
 
       <main>
         <Hero onBookClick={() => handleBookClick()} />

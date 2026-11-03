@@ -14,6 +14,8 @@ export const BF = {
   },
   ticker: ['Black Friday', 'A free gi with 3 paid months', 'Until Dec 2', 'Essential Box for $210'],
   hero: 'A free gi with 3 paid months',
+  // box do formulário (painel esquerdo): linha de valores e a tira do celular
+  box: { line: 'Add the $210 Essential Box', slim: 'Free gi with 3 months' },
   cta: 'Claim your spot',
   fine: 'Offer valid until Dec 2.',
 }
