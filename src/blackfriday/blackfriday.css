@@ -4,8 +4,8 @@
 :root {
   --bf-ink: #0a0a0a;
   --bf-paper: #fafafa;
-  --bf-accent: var(--color-accent, #ff6a00);
-  --bf-accent-ink: #ffffff;
+  --bf-accent: var(--color-accent, #ad8245);
+  --bf-accent-ink: var(--color-accent-ink, #121212); /* ocre do rebrand: texto escuro, como os botões da página */
   --bf-muted: #a3a3a3;
   --bf-lead: #d4d4d4;
   --bf-display: var(--font-display, 'Anton', sans-serif);

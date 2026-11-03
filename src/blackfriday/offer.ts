@@ -2,7 +2,7 @@
    cliente. RP Boerne: kimono grátis pagando 3 meses de Jiu-Jitsu, e a Essential
    Box de $210 como adicional, até 02/12. Nada de travessão. */
 export const BF = {
-  academy: 'RPBJJ Boerne',
+  academy: 'Relentless BJJ Squad',
   tag: 'Black Friday',
   headline: ['Free Gi', 'with 3 Months'],
   lead: 'From now until Dec 2, you pay for 3 months of Jiu-Jitsu and get a free gi, and you can also add the $210 Essential Box.',
