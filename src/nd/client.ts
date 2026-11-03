@@ -2,7 +2,7 @@
 // (clients / conversoes_tracking) and kept in sync by the standards robot.
 export default {
   "academy": {
-    "name": "Rodrigo Pinheiro BJJ Boerne",
+    "name": "Relentless BJJ Squad",
     "phone": "+1 (830) 816-0484",
     "address": "28255 Frontage Rd Suite 103, Boerne, TX 78006",
     "mapsUrl": "https://maps.app.goo.gl/Z4EffdTNcPicS2sK8",

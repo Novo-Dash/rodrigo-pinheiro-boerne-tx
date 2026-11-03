@@ -17,7 +17,6 @@ import {
   HowToStart,
   OurInstructors,
   MoreOfUs,
-  About,
   FAQ,
   Location,
   StickyCTABar,
@@ -49,7 +48,6 @@ function LandingPage() {
         <HowToStart onBookClick={() => handleBookClick()} />
         <OurInstructors onBookClick={() => handleBookClick()} />
         <MoreOfUs />
-        <About />
         <FAQ />
         <Location />
       </main>

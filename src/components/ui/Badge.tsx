@@ -11,7 +11,7 @@ export function Badge({ children, className, dark }: BadgeProps) {
     <span
       className={cn(
         'inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.18em]',
-        dark ? 'text-white/50' : 'text-[var(--color-accent)]',
+        dark ? 'text-white/50' : 'text-[var(--color-accent-dark)]',
         className
       )}
     >

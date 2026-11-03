@@ -21,7 +21,7 @@ export const ACADEMY = {
   email: 'ribabjj@gmail.com',
   mapsUrl: 'https://maps.app.goo.gl/Z4EffdTNcPicS2sK8',
   mapEmbedQuery: '28255+Frontage+Rd+Suite+103,+Boerne,+TX+78006',
-  instagram: 'https://www.instagram.com/rpbjj_boerne/',
+  instagram: 'https://www.instagram.com/relentlessbjjsquad/',
   facebook: 'https://www.facebook.com/RPBJJBoerneTX/',
   mainSite: 'https://rpbjjboerne.com/',
 } as const

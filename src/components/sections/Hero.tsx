@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import BfHeroTip from '@/blackfriday/BfHeroTip'
 
@@ -9,6 +8,7 @@ interface HeroProps {
 }
 
 export function Hero({ onBookClick, className }: HeroProps) {
+  const logoRef     = useRef<HTMLImageElement>(null)
   const headingRef  = useRef<HTMLHeadingElement>(null)
   const subtitleRef = useRef<HTMLParagraphElement>(null)
   const ctaRef      = useRef<HTMLDivElement>(null)
@@ -16,7 +16,11 @@ export function Hero({ onBookClick, className }: HeroProps) {
   const ctxRef      = useRef<{ revert: () => void } | null>(null)
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // The inline opacity:0 waits for the timeline; without motion, show everything now.
+      for (const r of [logoRef, headingRef, subtitleRef, ctaRef]) r.current?.style.setProperty('opacity', '1')
+      return
+    }
     let cancelled = false
 
     async function animate() {
@@ -25,7 +29,8 @@ export function Hero({ onBookClick, className }: HeroProps) {
       ctxRef.current?.revert()
       ctxRef.current = gsap.context(() => {
         const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-        tl.fromTo(headingRef.current,  { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.2)
+        tl.fromTo(logoRef.current,     { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.1)
+          .fromTo(headingRef.current,  { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.2)
           .fromTo(subtitleRef.current, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.8 }, 0.35)
           .fromTo(ctaRef.current,      { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.7 }, 0.48)
           .fromTo(imageRef.current,    { autoAlpha: 0, scale: 1.03 }, { autoAlpha: 1, scale: 1, duration: 1.1 }, 0.1)
@@ -85,6 +90,17 @@ export function Hero({ onBookClick, className }: HeroProps) {
         <div className="flex flex-col items-center text-center gap-6">
           <BfHeroTip />
 
+          <img
+            ref={logoRef}
+            src="/logo.webp"
+            alt="Relentless BJJ Squad"
+            className="h-24 md:h-32 w-auto"
+            width={534}
+            height={561}
+            fetchPriority="high"
+            style={{ opacity: 0 }}
+          />
+
           <h1
             ref={headingRef}
             className="text-fluid-hero uppercase text-white"
@@ -102,14 +118,22 @@ export function Hero({ onBookClick, className }: HeroProps) {
             className="text-fluid-body text-white/75 max-w-2xl"
             style={{ opacity: 0 }}
           >
-            Led by World Champion coaches, RP Boerne has created a welcoming space for all ages and fitness levels where everyone can start with confidence. Improvement on and off the mats is seen within weeks.
+            Led by World Champion coaches, Relentless BJJ Squad has created a welcoming space for all ages and fitness levels where everyone can start with confidence. Improvement on and off the mats is seen within weeks.
           </p>
 
           <div ref={ctaRef} className="flex flex-wrap justify-center gap-3" style={{ opacity: 0 }}>
-            <Button onClick={onBookClick} size="lg">
-              Book my first free trial class
-              <ArrowRight />
-            </Button>
+            <button type="button" onClick={onBookClick} className="hero-cta">
+              <span className="hero-cta__layer hero-cta__layer--back" aria-hidden="true" />
+              <span className="hero-cta__layer hero-cta__layer--mid" aria-hidden="true" />
+              <span className="hero-cta__face">
+                <span className="hero-cta__fill" aria-hidden="true" />
+                <span className="hero-cta__label">Book my first free trial class</span>
+                <span className="hero-cta__arrow" aria-hidden="true">
+                  <ArrowRight />
+                  <ArrowRight />
+                </span>
+              </span>
+            </button>
           </div>
 
         </div>

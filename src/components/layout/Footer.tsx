@@ -18,7 +18,7 @@ export function Footer({ onBookClick }: FooterProps) {
                   style={{ fontFamily: 'var(--font-display)' }}
                 >
                   Start your journey{' '}
-                  <span style={{ color: 'var(--color-accent)' }}>· RPBJJ Boerne ·</span>
+                  <span style={{ color: 'var(--color-accent)' }}>· Relentless BJJ Squad ·</span>
                 </span>
               ))}
             </div>
@@ -33,11 +33,13 @@ export function Footer({ onBookClick }: FooterProps) {
           <div className="flex flex-col gap-4">
             <img
               src="/logo.webp"
-              alt="Rodrigo Pinheiro BJJ"
-              className="h-14 w-auto object-contain self-start"
+              alt="Relentless BJJ Squad"
+              className="h-36 w-auto self-start"
+              width={534}
+              height={561}
             />
             <p className="text-sm text-white/50 leading-relaxed max-w-xs">
-              Rodrigo Pinheiro BJJ Boerne is a Brazilian Jiu-Jitsu academy led by World Champion head coaches, built to serve students of all ages and experience levels.
+              Relentless BJJ Squad is a Brazilian Jiu-Jitsu academy led by World Champion head coaches, built to serve students of all ages and experience levels.
             </p>
           </div>
 
@@ -96,7 +98,7 @@ export function Footer({ onBookClick }: FooterProps) {
             {/* Social icons */}
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://www.instagram.com/rpbjj_boerne/"
+                href="https://www.instagram.com/relentlessbjjsquad/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="h-10 w-10 grid place-items-center border border-white/20 hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)] transition-colors"
@@ -113,7 +115,7 @@ export function Footer({ onBookClick }: FooterProps) {
             <button
               type="button"
               onClick={onBookClick}
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-none bg-[var(--color-accent)] px-6 text-xs font-bold uppercase tracking-wide text-white hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(255,106,0,0.35)] hover:-translate-y-0.5 transition-all duration-200"
+              className="mt-6 inline-flex min-h-[44px] items-center rounded-none bg-[var(--color-accent)] px-6 text-xs font-bold uppercase tracking-wide text-white hover:bg-[var(--color-accent-hover)] shadow-[0_8px_30px_rgba(var(--accent-rgb),0.35)] hover:-translate-y-0.5 transition-all duration-200"
             >
               Book Free Class
             </button>
@@ -121,7 +123,7 @@ export function Footer({ onBookClick }: FooterProps) {
         </div>
 
         <div className="mt-16 border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/30">
-          <p>© 2026 Rodrigo Pinheiro BJJ Boerne. All rights reserved.</p>
+          <p>© 2026 Relentless BJJ Squad. All rights reserved.</p>
           <p>By <a href="https://lp.novodash.com/site?utm_source=rodrigo-pinheiro-boerne-tx&utm_medium=referral&utm_campaign=lp-footer" target="_blank" rel="noopener" className="transition-colors hover:text-white">Novo Dash</a></p>
         </div>
       </div>
