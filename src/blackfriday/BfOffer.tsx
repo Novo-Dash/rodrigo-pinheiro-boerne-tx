@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { BF } from './offer'
@@ -8,10 +8,25 @@ import './blackfriday.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
+// dias, horas e minutos até o fim da campanha; null depois que acabou
+function useCountdown(end: string) {
+  const left = () => Math.max(0, new Date(end).getTime() - Date.now())
+  const [ms, setMs] = useState(left)
+  useEffect(() => {
+    const t = setInterval(() => setMs(left()), 30000)
+    return () => clearInterval(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [end])
+  if (!ms) return null
+  const m = Math.floor(ms / 60000)
+  return { days: Math.floor(m / 1440), hours: Math.floor((m % 1440) / 60), mins: m % 60 }
+}
+
 /* O bloco da oferta: 2ª seção da página, logo depois do hero. O único botão é
    o do formulário (#book, que o kit intercepta). */
 export default function BfOffer() {
   const root = useRef<HTMLElement>(null)
+  const left = useCountdown(BF.ends)
 
   useLayoutEffect(() => {
     const el = root.current
@@ -27,17 +42,11 @@ export default function BfOffer() {
         tl.from('.bf-kicker', { scale: 1.35, rotate: -9, autoAlpha: 0, duration: 0.45, ease: 'back.out(2.2)' })
           .from('.bf-h2-line', { yPercent: 105, duration: 0.8, stagger: 0.12 }, '-=0.15')
           .from('.bf-lead, .bf-act', { y: 18, autoAlpha: 0, duration: 0.6, stagger: 0.1 }, '-=0.45')
-          .from('.bf-disk', { scale: 0.55, autoAlpha: 0, duration: 0.9, ease: 'expo.out' }, 0.1)
-          .from('.bf-shirt', { y: -60, rotate: -7, autoAlpha: 0, duration: 1, ease: 'back.out(1.3)' }, 0.25)
-          .from('.bf-price', { rotate: 38, autoAlpha: 0, duration: 1.3, ease: 'elastic.out(1, 0.45)' }, 0.75)
-          .from('.bf-cal', { x: -40, rotate: -20, autoAlpha: 0, duration: 0.8, ease: 'back.out(1.6)' }, 0.85)
-          .from('.bf-sticker', { scale: 1.8, autoAlpha: 0, duration: 0.4, ease: 'back.out(2.5)' }, 1.15)
-          // depois de pousar, a etiqueta fica balançando no fio, devagar. Criado
-          // só aqui: um tween relativo montado antes leria o ângulo de partida.
-          .add(() => {
-            gsap.fromTo('.bf-price', { rotate: 9 }, { rotate: 13, duration: 2.6, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-          })
+          .from('.bf-tile:not(.bf-tile--copy)', { y: 36, autoAlpha: 0, duration: 0.8, ease: 'expo.out', stagger: 0.08 }, 0.2)
+          .from('.bf-gi-art', { y: -40, rotate: -6, duration: 1, ease: 'back.out(1.3)' }, 0.45)
+      })
 
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
         // as duas faixas do X deslizam em sentidos opostos com a rolagem
         // (o GSAP lê a rotação do CSS e só soma o x)
         const scrub = { trigger: '.bf-x', start: 'top bottom', end: 'bottom top', scrub: true }
@@ -51,8 +60,9 @@ export default function BfOffer() {
 
   return (
     <section ref={root} id="black-friday" className="bf-offer" aria-labelledby="bf-offer-title">
-      <div className="bf-offer-inner">
-        <div className="bf-head">
+      <div className="bf-offer-inner bf-bento">
+        {/* o título, a frase, os 3 benefícios e o único botão */}
+        <div className="bf-tile bf-tile--copy">
           <p className="bf-kicker bf-belt">
             <span className="bf-kicker-text">
               <TagGlyph />
@@ -71,44 +81,61 @@ export default function BfOffer() {
               <li key={b}>{b}</li>
             ))}
           </ul>
-        </div>
-
-        <div className="bf-art" aria-hidden="true">
-          <div className="bf-disk" />
-          <Kimono className="bf-shirt" />
-          <span className="bf-sticker-pos">
-            <span className="bf-sticker">
-              <span>{BF.perks.gear.label}</span>
-              <strong>{BF.perks.gear.value}</strong>
-            </span>
-          </span>
-          <div className="bf-price">
-            <span className="bf-price-string" />
-            <div className="bf-price-card">
-              <span className="bf-price-hole" />
-              <span className="bf-price-label">{BF.perks.fee.label}</span>
-              <span className="bf-price-value">{BF.perks.fee.value}</span>
-              <span className="bf-price-note">{BF.perks.fee.note}</span>
-            </div>
-          </div>
-          <div className="bf-cal">
-            <span className="bf-cal-rings"><i /><i /></span>
-            <span className="bf-cal-label">{BF.perks.start.label}</span>
-            <span className="bf-cal-value">{BF.perks.start.value}</span>
+          <div className="bf-act">
+            {/* o botão da própria página; #book é interceptado pelo kit */}
+            <Button as="a" href="#book" size="lg">
+              {BF.cta}
+            </Button>
+            <p className="bf-fine">{BF.fine}</p>
           </div>
         </div>
 
-        <div className="bf-act">
-          {/* a oferta inteira em texto para leitor de tela: a arte acima é aria-hidden */}
-          <p className="bf-sr">
-            {BF.perks.fee.label}: {BF.perks.fee.value}. {BF.perks.gear.label}: {BF.perks.gear.value}.{' '}
-            {BF.perks.start.label}: {BF.perks.start.value}.
-          </p>
-          {/* o botão da própria página; #book é interceptado pelo kit */}
-          <Button as="a" href="#book" size="lg">
-            {BF.cta}
-          </Button>
-          <p className="bf-fine">{BF.fine}</p>
+        {/* a oferta: o gi grátis com 3 meses pagos */}
+        <div className="bf-tile bf-tile--gi">
+          <p className="bf-tile-label">{BF.perks.gear.label}</p>
+          <p className="bf-tile-big">{BF.perks.gear.value}</p>
+          <Kimono className="bf-gi-art" />
+        </div>
+
+        {/* foto real da academia */}
+        <figure className="bf-tile bf-tile--photo">
+          <img src={BF.photo.src} alt={BF.photo.alt} width="800" height="1120" loading="lazy" decoding="async" />
+          <figcaption>
+            <img src="/logo-crest.webp" alt="" width="40" height="40" loading="lazy" />
+            {BF.academy}
+          </figcaption>
+        </figure>
+
+        {/* o adicional PAGO, separado do gi grátis */}
+        <div className="bf-tile bf-tile--box">
+          <p className="bf-tile-chip">{BF.addon.chip}</p>
+          <p className="bf-tile-label">{BF.perks.fee.label}</p>
+          <p className="bf-tile-big">{BF.perks.fee.value}</p>
+          <ul className="bf-box-items">
+            {BF.addon.items.map((i) => (
+              <li key={i}>{i}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* o prazo, com a contagem */}
+        <div className="bf-tile bf-tile--ends">
+          <p className="bf-tile-label">{BF.perks.start.label}</p>
+          <p className="bf-tile-big">{BF.perks.start.value}</p>
+          {left ? (
+            <p className="bf-count" aria-label={`Offer ends in ${left.days} days, ${left.hours} hours and ${left.mins} minutes`}>
+              {([
+                [left.days, 'days'],
+                [left.hours, 'hrs'],
+                [left.mins, 'min'],
+              ] as const).map(([n, u]) => (
+                <span key={u}>
+                  <b>{String(n).padStart(2, '0')}</b>
+                  {u}
+                </span>
+              ))}
+            </p>
+          ) : null}
         </div>
       </div>
 
