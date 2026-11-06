@@ -18,7 +18,14 @@ export const BF = {
   box: { line: 'Add the $210 Essential Box', slim: 'Free gi with 3 months' },
   // o bento: o gi grátis e a Essential Box em blocos SEPARADOS (a caixa é adicional
   // pago; RP HQ 05/11: o cliente reclamou quando o plano curto parecia levar o kit)
-  addon: { chip: 'Optional add-on', items: ['2 shirts', 'Gi', 'Rash guard'] },
+  addon: {
+    chip: 'Optional add-on',
+    items: ['2 shirts', 'Gi', 'Rash guard'],
+    img: '/bf-essential-box.webp',
+    alt: 'The Relentless Essential Box open, with a black gi, a rash guard and two shirts with the gold R crest',
+  },
+  // as duas fotos de produto enviadas pelo Lucas (06/11)
+  gi: { img: '/bf-free-gi.webp', alt: 'Black Relentless gi with the gold R crest and a white belt' },
   photo: { src: '/Advanced.webp', alt: 'Two Relentless BJJ Squad athletes in their gis, smiling with their medals' },
   // fim da campanha: 02/12 23:59 em Boerne (CST, UTC-6)
   ends: '2026-12-02T23:59:59-06:00',

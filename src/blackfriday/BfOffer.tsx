@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { BF } from './offer'
-import { Kimono, TagGlyph } from './art'
+import { TagGlyph } from './art'
 import { Button } from '@/components/ui'
 import './blackfriday.css'
 
@@ -43,7 +43,7 @@ export default function BfOffer() {
           .from('.bf-h2-line', { yPercent: 105, duration: 0.8, stagger: 0.12 }, '-=0.15')
           .from('.bf-lead, .bf-act', { y: 18, autoAlpha: 0, duration: 0.6, stagger: 0.1 }, '-=0.45')
           .from('.bf-tile:not(.bf-tile--copy)', { y: 36, autoAlpha: 0, duration: 0.8, ease: 'expo.out', stagger: 0.08 }, 0.2)
-          .from('.bf-gi-art', { y: -40, rotate: -6, duration: 1, ease: 'back.out(1.3)' }, 0.45)
+          .from('.bf-prod', { scale: 1.08, duration: 1.2, ease: 'power3.out', stagger: 0.08 }, 0.3)
       })
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
@@ -94,7 +94,7 @@ export default function BfOffer() {
         <div className="bf-tile bf-tile--gi">
           <p className="bf-tile-label">{BF.perks.gear.label}</p>
           <p className="bf-tile-big">{BF.perks.gear.value}</p>
-          <Kimono className="bf-gi-art" />
+          <img className="bf-prod" src={BF.gi.img} alt={BF.gi.alt} width="900" height="900" loading="lazy" decoding="async" />
         </div>
 
         {/* foto real da academia */}
@@ -116,6 +116,7 @@ export default function BfOffer() {
               <li key={i}>{i}</li>
             ))}
           </ul>
+          <img className="bf-prod" src={BF.addon.img} alt={BF.addon.alt} width="900" height="900" loading="lazy" decoding="async" />
         </div>
 
         {/* o prazo, com a contagem */}

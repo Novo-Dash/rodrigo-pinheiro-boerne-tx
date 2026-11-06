@@ -578,8 +578,8 @@ html:has(.bf-ticker) { scroll-padding-top: 104px; }
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
   grid-template-areas:
-    'copy gi  photo'
-    'copy box ends';
+    'copy gi    box'
+    'copy photo ends';
   gap: 14px;
 }
 .bf-tile {
@@ -615,27 +615,20 @@ html:has(.bf-ticker) { scroll-padding-top: 104px; }
 }
 
 /* o gi grátis: o bloco no ocre, com o kimono desenhado saindo pelo pé */
-.bf-tile--gi { background: var(--bf-accent); border-color: var(--bf-accent); color: var(--bf-accent-ink); }
-.bf-tile--gi::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: radial-gradient(color-mix(in srgb, var(--bf-accent-ink) 20%, transparent) 1.2px, transparent 1.5px);
-  background-size: 11px 11px;
-  -webkit-mask-image: radial-gradient(circle at 90% 90%, #000, transparent 60%);
-  mask-image: radial-gradient(circle at 90% 90%, #000, transparent 60%);
-}
-.bf-gi-art {
-  position: absolute;
-  right: 2%;
-  bottom: -4%;
-  width: 54%;
+.bf-tile--gi { background: #b48b45; border-color: #b48b45; color: var(--bf-accent-ink); display: flex; flex-direction: column; } /* o fundo da foto, para a imagem emendar sem borda */
+/* foto de produto: sangra até as bordas do bloco, sempre embaixo do texto (nada escrito em cima do produto) */
+.bf-prod {
+  display: block;
+  width: calc(100% + 52px);
+  max-width: none;
   height: auto;
-  overflow: visible;
-  rotate: -6deg;
-  filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.35));
+  aspect-ratio: 1;
+  margin: auto -26px -24px;
+  padding-top: 8px;
+  object-fit: cover;
 }
+
+
 
 /* foto real da turma */
 .bf-tile--photo img:first-child {
@@ -670,7 +663,7 @@ html:has(.bf-ticker) { scroll-padding-top: 104px; }
 .bf-tile--photo figcaption img { width: 34px; height: 34px; flex: none; }
 
 /* a Essential Box: papel claro, borda tracejada e o chip de adicional */
-.bf-tile--box { background: #f2efe9; border: 2px dashed #b9b0a2; color: var(--bf-ink); display: flex; flex-direction: column; }
+.bf-tile--box { background: #eee5d5; border: 2px dashed #b9b0a2; color: var(--bf-ink); display: flex; flex-direction: column; }
 .bf-tile-chip {
   align-self: flex-start;
   margin-bottom: 18px !important;
@@ -680,7 +673,7 @@ html:has(.bf-ticker) { scroll-padding-top: 104px; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.bf-tile--box .bf-tile-label { margin-top: auto; color: var(--color-accent-dark, #7e5b2a); }
+.bf-tile--box .bf-tile-label { color: var(--color-accent-dark, #7e5b2a); }
 /* o "+" de adicional, grande, no vazio do canto */
 .bf-tile--box::after {
   content: '+';
@@ -726,21 +719,30 @@ html:has(.bf-ticker) { scroll-padding-top: 104px; }
 @media (max-width: 1023px) {
   .bf-bento {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas: 'copy copy' 'gi photo' 'box ends';
+    grid-template-areas: 'copy copy' 'gi box' 'photo ends';
   }
   .bf-tile--gi, .bf-tile--photo, .bf-tile--box, .bf-tile--ends { min-height: 260px; }
+  /* no tablet o bloco tem 420px: a foto não precisa crescer junto (o fundo é o mesmo da foto) */
+  .bf-prod { width: min(calc(100% + 52px), 380px); margin-inline: auto; }
+  /* a foto tem vinheta leve: as bordas laterais somem no fundo do bloco em vez de marcar uma emenda */
+  .bf-prod { -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
 }
 @media (max-width: 600px) {
   .bf-bento { gap: 10px; grid-template-areas: 'copy copy' 'gi gi' 'box box' 'photo ends'; }
   .bf-tile { padding: 20px 18px 18px; }
   .bf-tile--copy { padding: 30px 20px 28px; }
-  .bf-tile--gi, .bf-tile--box { min-height: 220px; }
+  .bf-tile--gi, .bf-tile--box { min-height: 0; }
+  .bf-prod { width: min(calc(100% + 36px), 360px); margin: auto auto -18px; }
   .bf-tile--photo, .bf-tile--ends { min-height: 0; aspect-ratio: 1; }
-  .bf-gi-art { width: 46%; right: 4%; bottom: -6%; }
   .bf-tile--box::after { font-size: 150px; }
   .bf-tile--ends .bf-tile-big { font-size: 40px; }
   .bf-count { gap: 10px; padding-top: 14px; }
   .bf-count b { font-size: 26px; }
   .bf-tile--photo figcaption { font-size: 11px; left: 12px; bottom: 12px; gap: 8px; }
   .bf-tile--photo figcaption img { width: 26px; height: 26px; }
+}
+/* o gi tem menos texto que a caixa: a foto ocupa a sobra inteira do bloco, centrada (fundo igual ao do bloco) */
+.bf-tile--gi .bf-prod { flex: 1 1 0; min-height: 0; aspect-ratio: auto; object-fit: contain; }
+@media (max-width: 600px) {
+  .bf-tile--gi .bf-prod { flex: none; aspect-ratio: 1; }
 }
